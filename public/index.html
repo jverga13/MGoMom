@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MGoMom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ... (all your existing CSS styles are here, no changes needed) ... */
+     * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Nunito', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #001E3C;
+      color: #f7f7f7;
+      line-height: 1.6;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background-color: #FFCB05;
+      position: relative;
+      z-index: 1000;
+    }
+    .header-logo {
+      max-height: 48px;
+      width: auto;
+      flex-shrink: 1;
+      margin-right: 0.5rem;
+    }
+    .hamburger {
+      display: none;      /* hidden on desktop/tablet */
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #001E3C;
+      margin-left: auto;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem; /* Adjusted gap for login elements */
+      flex-wrap: wrap;
+    }
+    nav a {
+      white-space: nowrap;
+      font-size: clamp(0.75rem, 1.8vw, 1rem);
+      padding: 0.4rem 0.6rem;
+      font-weight: 700;
+      color: #001E3C;
+      background-color: transparent;
+      border-radius: 4px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    nav a:hover {
+      background-color: #001E3C;
+      color: #FFCB05;
+    }
+    .cta-button {
+      background-color: #001E3C;
+      color: #FFCB05;
+      font-weight: 700;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      white-space: nowrap;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .cta-button:hover {
+      background-color: #FFCB05;
+      color: #001E3C;
+    }
+    main {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .hero {
+      background-color: #022b59;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .hero a {
+      text-decoration: none;
+    }
+    h2 {
+      margin-top: 2rem;
+      font-size: 1.75rem;
+    }
+    img.profile {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+    footer {
+      background-color: #00172d;
+      color: #cccccc;
+      padding: 2rem 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 3rem;
+      line-height: 1.4;
+    }
+    footer a {
+      color: #FFCB05;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html">
+      <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
+    </a>
+    <button class="hamburger" aria-label="Toggle menu">☰</button>
+    <nav>
+      <a href="care-kits.html" class="desktop-link">Care Kits</a>
+      <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
+      <a href="airport-pickup.html" class="desktop-link">Airport Pickup</a>
+
+      <div id="auth-container">
+         <button id="login-button">Sign in with Google</button>
+         <div id="user-info" style="display: none;">
+             <p id="user-welcome"></p>
+             <button id="logout-button">Sign Out</button>
+         </div>
+      </div>
+       </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>A trusted Michigan Mom when you need her</h1>
+      <p>Personalized support for your student—deliveries, care kits, urgent visits, and more.</p>
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLScML_67fyKunEMnl78vgbFPgI2NvHnoE1sJ_2398dxIHaqRNA/viewform?usp=sharing&ouid=107083262156525016261" class="cta-button">Book Now</a>
+      <p style="margin-top: 1rem; font-size: 0.9rem;">Typical response hours: 8 a.m.–10 p.m. ET</p>
+    </section>
+    <section>
+      <h2>About Me</h2>
+      <p>Hi, I’m B—the heart behind MGoMom. As a proud Michigan mom and long-time Ann Arbor local, I know how hard it is to have your child far from home. Whether it’s a forgotten medication, a tough exam day, or settling into a new dorm, I’m here to step in with practical help and motherly reassurance.</p>
+      <img src="IMG_0072.jpeg" alt="B and family at Michigan Stadium" class="profile" />
+      <p>This work brings me joy—connecting with families, comforting students, and ensuring someone they trust is close by. From a text for help to a drop-off of soup and tissues, MGoMom is ready to step in.</p>
+    </section>
+  </main>
+
+  <footer>
+    <section>
+      <h3>How to Order or Contact Me</h3>
+      <p>Ready to request a service? Choose one of the following:</p>
+      <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: 400px;">
+        <li><strong>Book Online:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLScML_67fyKunEMnl78vgbFPgI2NvHnoE1sJ_2398dxIHaqRNA/viewform?usp=sharing&ouid=107083262156525016261">Fill out the Request Form</a></li>
+        <li><strong>Call/Text:</strong> <a href="tel:+13034082997">+1 (303) 408-2997</a></li>
+        <li><strong>Email:</strong> <a href="mailto:lolidkrn@gmail.com">lolidkrn@gmail.com</a></li>
+      </ul>
+      <p style="margin-top: 1rem;"><em>Disclaimer: MGoMom is not a medical professional. In an emergency, please call 911 immediately.</em></p>
+      <p style="margin-top: 1rem;">&copy; 2025 MGoMom. All rights reserved.</p>
+    </section>
+  </footer>
+
+  <script>
+    // ... (Your existing hamburger menu script is here, no changes needed) ...
+    const burger = document.querySelector('.hamburger');
+    const nav    = document.querySelector('nav');
+    burger.addEventListener('click', () => {
+      nav.classList.toggle('nav-open');
+    });
+    document.addEventListener('click', (e) => {
+      if (!nav.contains(e.target) && !burger.contains(e.target)) {
+        nav.classList.remove('nav-open');
+      }
+    });
+  </script>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    // ADD THESE THREE LINES for Authentication
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+      authDomain: "mgomom-33d39.firebaseapp.com",
+      projectId: "mgomom-33d39",
+      storageBucket: "mgomom-33d39.firebasestorage.app",
+      messagingSenderId: "431667209818",
+      appId: "1:431667209818:web:44544d38e97720a4425a63",
+      measurementId: "G-BYE58ZXSNC"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    // --- START: NEW AUTHENTICATION JAVASCRIPT ---
+
+    // Initialize Firebase Authentication and get a reference to the service
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    // Get the HTML elements
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const authContainer = document.getElementById('auth-container');
+    const userInfo = document.getElementById('user-info');
+    const userWelcome = document.getElementById('user-welcome');
+
+    // Function to handle Google Sign-In
+    loginButton.addEventListener('click', () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          console.log("Successfully signed in!", user);
+        }).catch((error) => {
+          console.error("Sign-in error", error.message);
+        });
+    });
+    
+    // Function to handle Sign-Out
+    logoutButton.addEventListener('click', () => {
+        signOut(auth).then(() => {
+            console.log("User signed out.");
+        }).catch((error) => {
+            console.error("Sign out error", error);
+        });
+    });
+
+    // Listen for authentication state changes
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User is logged in:", user);
+        userWelcome.textContent = `Welcome, ${user.displayName}!`;
+        loginButton.style.display = 'none';
+        userInfo.style.display = 'block';
+      } else {
+        // User is signed out
+        console.log("User is logged out.");
+        loginButton.style.display = 'block';
+        userInfo.style.display = 'none';
+      }
+    });
+
+    // --- END: NEW AUTHENTICATION JAVASCRIPT ---
+  </script>
+</body>
+</html>
