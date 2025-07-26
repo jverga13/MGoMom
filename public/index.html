@@ -155,14 +155,23 @@
     <section class="hero">
       <h1>A trusted Michigan Mom when you need her</h1>
       <p>Personalized support for your student—deliveries, care kits, urgent visits, and more.</p>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLScML_67fyKunEMnl78vgbFPgI2NvHnoE1sJ_2398dxIHaqRNA/viewform?usp=sharing&ouid=107083262156525016261" class="cta-button">Book Now</a>
-      <p style="margin-top: 1rem; font-size: 0.9rem;">Typical response hours: 8 a.m.–10 p.m. ET</p>
-    </section>
-    <section>
-      <h2>About Me</h2>
-      <p>Hi, I’m B—the heart behind MGoMom. As a proud Michigan mom and long-time Ann Arbor local, I know how hard it is to have your child far from home. Whether it’s a forgotten medication, a tough exam day, or settling into a new dorm, I’m here to step in with practical help and motherly reassurance.</p>
-      <img src="IMG_0072.jpeg" alt="B and family at Michigan Stadium" class="profile" />
-      <p>This work brings me joy—connecting with families, comforting students, and ensuring someone they trust is close by. From a text for help to a drop-off of soup and tissues, MGoMom is ready to step in.</p>
+      
+      <a href="#" id="login-to-book-btn" class="cta-button">Please Sign In to Book a Service</a>
+      
+      <form id="booking-form" style="display: none; margin-top: 1rem; background-color: #001E3C; padding: 1rem; border-radius: 8px;">
+        <h3 style="margin-top: 0;">Request a Service</h3>
+        <select id="service-select" style="width: 100%; padding: 0.5rem; margin-bottom: 0.5rem;">
+          <option value="">--Select a Service--</option>
+          <option value="Care Kit">Care Kit</option>
+          <option value="Local Delivery">Local Delivery</option>
+          <option value="Urgent Care Visit">Urgent Care Visit</option>
+          <option value="Post-Surgery Check-in">Post-Surgery Check-in</option>
+          <option value="Move-In Help">Move-In Help</option>
+          <option value="Airport Pickup">Airport Pickup</option>
+        </select>
+        <textarea id="service-notes" placeholder="Add any special instructions or details..." style="width: 100%; padding: 0.5rem; min-height: 80px;"></textarea>
+        <button type="submit" class="cta-button" style="margin-top: 1rem;">Submit Request</button>
+      </form>
     </section>
   </main>
 
@@ -194,12 +203,14 @@
     });
   </script>
 
-  <script type="module">
+<script type="module">
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    // ADD THESE THREE LINES for Authentication
+    // ADD THESE for Authentication
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    // ADD THESE for Firestore database
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // Your web app's Firebase configuration
     const firebaseConfig = {
@@ -216,31 +227,25 @@
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
 
-    // --- START: NEW AUTHENTICATION JAVASCRIPT ---
+    // --- AUTHENTICATION JAVASCRIPT (Your existing code) ---
 
-    // Initialize Firebase Authentication and get a reference to the service
     const auth = getAuth(app);
     const provider = new GoogleAuthProvider();
 
-    // Get the HTML elements
     const loginButton = document.getElementById('login-button');
     const logoutButton = document.getElementById('logout-button');
-    const authContainer = document.getElementById('auth-container');
     const userInfo = document.getElementById('user-info');
     const userWelcome = document.getElementById('user-welcome');
 
-    // Function to handle Google Sign-In
     loginButton.addEventListener('click', () => {
       signInWithPopup(auth, provider)
         .then((result) => {
-          const user = result.user;
-          console.log("Successfully signed in!", user);
+          console.log("Successfully signed in!", result.user);
         }).catch((error) => {
           console.error("Sign-in error", error.message);
         });
     });
     
-    // Function to handle Sign-Out
     logoutButton.addEventListener('click', () => {
         signOut(auth).then(() => {
             console.log("User signed out.");
@@ -249,23 +254,75 @@
         });
     });
 
-    // Listen for authentication state changes
+    // --- START: NEW FIRESTORE JAVASCRIPT ---
+
+    // Initialize Cloud Firestore and get a reference to the service
+    const db = getFirestore(app);
+
+    // Get the form and the login-to-book button from the HTML
+    const bookingForm = document.getElementById('booking-form');
+    const loginToBookBtn = document.getElementById('login-to-book-btn');
+
+    // Listen for authentication state changes to show/hide elements
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in
-        console.log("User is logged in:", user);
         userWelcome.textContent = `Welcome, ${user.displayName}!`;
         loginButton.style.display = 'none';
         userInfo.style.display = 'block';
+        
+        // Show the booking form for logged-in users
+        bookingForm.style.display = 'block';
+        loginToBookBtn.style.display = 'none';
+
       } else {
         // User is signed out
-        console.log("User is logged out.");
         loginButton.style.display = 'block';
         userInfo.style.display = 'none';
+
+        // Hide the booking form for logged-out users
+        bookingForm.style.display = 'none';
+        loginToBookBtn.style.display = 'block';
       }
     });
 
-    // --- END: NEW AUTHENTICATION JAVASCRIPT ---
-  </script>
+    // Listen for the form submission
+    bookingForm.addEventListener('submit', (e) => {
+      e.preventDefault(); // Prevent the form from reloading the page
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("Please sign in to submit a request.");
+        return;
+      }
+
+      const selectedService = document.getElementById('service-select').value;
+      const serviceNotes = document.getElementById('service-notes').value;
+
+      if (!selectedService) {
+        alert("Please select a service.");
+        return;
+      }
+
+      // Add a new document with a generated ID to the "orders" collection
+      addDoc(collection(db, "orders"), {
+        userId: user.uid,
+        userEmail: user.email,
+        userName: user.displayName,
+        service: selectedService,
+        notes: serviceNotes,
+        status: "new",
+        createdAt: serverTimestamp()
+      }).then(() => {
+        alert("Your request has been submitted successfully!");
+        bookingForm.reset(); // Clear the form
+      }).catch((error) => {
+        console.error("Error adding document: ", error);
+        alert("There was an error submitting your request. Please try again.");
+      });
+    });
+    
+</script>  
+
 </body>
 </html>

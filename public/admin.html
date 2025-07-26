@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - MGoMom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 2rem; }
+        main { display: none; } /* Hide dashboard by default */
+        h1 { color: #001E3C; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; }
+        th { background-color: #001E3C; color: #FFCB05; }
+        tr:nth-of-type(even) { background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+    <h1>MGoMom Admin Dashboard</h1>
+    <p id="loading-message">Loading orders...</p>
+
+    <main id="admin-content">
+        <p>Welcome, Admin! Here are the current service requests.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Customer Name</th>
+                    <th>Service</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="orders-table-body">
+                </tbody>
+        </table>
+    </main>
+
+    <p id="error-message" style="display:none; color: red; font-weight: bold;">
+      Access Denied. You must be an administrator to view this page. You will be redirected shortly.
+    </p>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+            authDomain: "mgomom-33d39.firebaseapp.com",
+            projectId: "mgomom-33d39",
+            storageBucket: "mgomom-33d39.firebasestorage.app",
+            messagingSenderId: "431667209818",
+            appId: "1:431667209818:web:44544d38e97720a4425a63",
+            measurementId: "G-BYE58ZXSNC"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // --- SECURITY CHECK AND DATA FETCHING ---
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // IMPORTANT: Replace this with your Mom's actual User ID
+                const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12";
+
+                if (user.uid === adminUid) {
+                    // User is the admin, show the dashboard
+                    document.getElementById('admin-content').style.display = 'block';
+                    document.getElementById('loading-message').textContent = 'Loading...';
+                    
+                    // Fetch and display orders
+                    const ordersRef = collection(db, "orders");
+                    const q = query(ordersRef, orderBy("createdAt", "desc")); // Get newest orders first
+                    const querySnapshot = await getDocs(q);
+                    
+                    const ordersTableBody = document.getElementById('orders-table-body');
+                    ordersTableBody.innerHTML = ''; // Clear existing rows
+                    
+                    if (querySnapshot.empty) {
+                        document.getElementById('loading-message').textContent = 'No orders found.';
+                    } else {
+                         document.getElementById('loading-message').style.display = 'none';
+                    }
+
+                    querySnapshot.forEach((doc) => {
+                        const order = doc.data();
+                        const row = ordersTableBody.insertRow();
+                        
+                        // Format the timestamp to a readable date
+                        const date = order.createdAt.toDate().toLocaleDateString();
+
+                        row.innerHTML = `
+                            <td>${date}</td>
+                            <td>${order.userName}</td>
+                            <td>${order.service}</td>
+                            <td>${order.notes}</td>
+                            <td>${order.status}</td>
+                        `;
+                    });
+
+                } else {
+                    // User is logged in but is NOT the admin
+                    showAccessDenied();
+                }
+            } else {
+                // User is not logged in
+                showAccessDenied();
+            }
+        });
+
+        function showAccessDenied() {
+            document.getElementById('loading-message').style.display = 'none';
+            document.getElementById('error-message').style.display = 'block';
+            // Redirect to homepage after 3 seconds
+            setTimeout(() => {
+                window.location.href = '/index.html';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
