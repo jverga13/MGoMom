@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MGoMom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      margin: 0;
+      padding: 2rem;
+      background-color: #001E3C;
+      color: #f7f7f7;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #FFCB05;
+      padding: 0.75rem 2rem;
+      gap: 2rem;
+      overflow-x: auto;
+      flex-wrap: nowrap; /* ✅ prevent logo/nav stacking */
+    }
+
+    .header-logo {
+      max-height: 60px;
+      width: auto;
+      flex-shrink: 0;
+      filter: none; /* ⬅️ adds contrast */
+    }
+
+
+    nav {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: nowrap;      /* ✅ force single row */
+      overflow-x: auto;       /* ✅ allow scrolling if needed */
+      align-items: center;
+    }
+
+
+    .nav-wrapper {
+      background-color: #FFCB05;
+    }
+
+    nav a {
+      color: #001E3C;
+      font-weight: 800;           /* ⬅️ More bold */
+      font-size: 1.00rem;         /* ⬅️ Slightly larger */
+      text-decoration: none;
+      padding: 0.5rem 0.6rem;     /* Optional: tighter horizontal spacing */
+      border-radius: 5px;
+      white-space: nowrap;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+
+
+    nav a:hover {
+      background-color: #001E3C;
+      color: #FFCB05;
+    }
+
+    nav::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    nav::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+
+    main {
+      max-width: 1500px;
+      margin: auto;
+      padding-top: 2rem;
+    }
+
+    img.profile {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin-top: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #cccccc;
+      margin-top: 3rem;
+    }
+
+    section ul li a {
+      color: #FFCB05;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+  <img src="MGoMom horiz1.png" alt="MGoMom Logo" class="header-logo" />
+  <nav>
+    <a href="care-kits.html">Care Kits</a>
+    <a href="deliveries.html">Local Deliveries</a>
+    <a href="urgent-care.html">Urgent Care</a>
+    <a href="post-surgery.html">Emergency Care</a>
+    <a href="move-in.html">Move-In Help</a>
+    <a href="airport-pickup.html">Airport Pickup</a>
+    <a href="international.html">Out-of-State & International Students</a>
+  </nav>
+</header>
+<body>
+  <h1>Medication Pickups</h1>
+  <p>When your student is sick or overwhelmed, getting to the pharmacy can be difficult. We’ll pick up their prescription or over-the-counter medication and drop it off securely.</p>
+  <ul>
+    <li>Pickup from local pharmacies</li>
+    <li>Secure, discreet delivery</li>
+    <li>Optional notification for parents upon delivery</li>
+  </ul>
+  <p><a href="index.html">Back to Home</a></p>
+</body>
+
+  <footer>
+    <hr />
+<section>
+  <h3>How to Order or Contact Me</h3>
+  <p>Ready to request a delivery, ask a question, or place an order?</p>
+  <ul>
+    <li><strong>Text or Call:</strong> <a href="tel +1 (xxx) xxx xxx">+1 (xxx) xxx-xxx</a></li>
+    <li><strong>Email:</strong> <a href="mailto:lolidkrn@gmail.com">lolidkrn@gmail.com</a></li>
+    <li><strong>Mailing Address:</strong> 6829 Crafton Lane, Dublin, OH 43016</li>
+  </ul>
+</section>
+    <p>&copy; 2025 MGoMom. All rights reserved.</p>
+  </footer>
+</body>
+</html>
+
+</html>
