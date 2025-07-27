@@ -76,17 +76,22 @@
             logoutButton.addEventListener('click', () => signOut(auth));
         }
         
-        onAuthStateChanged(auth, (user) => {
-            const userInfo = document.getElementById('user-info');
-            const userWelcome = document.getElementById('user-welcome');
-            
-            if (user) { // User is signed IN
-                if(loginButton) loginButton.style.display = 'none';
-                if(userInfo) userInfo.style.display = 'block';
-                if(userWelcome) userWelcome.textContent = `Welcome, ${user.displayName}!`;
-            } else { // User is signed OUT
-                if(loginButton) loginButton.style.display = 'block';
-                if(userInfo) userInfo.style.display = 'none';
+        // --- TEMPORARY DEBUGGING CODE ---
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // User is logged in. FOR NOW, we will assume they are the admin to test.
+                console.log("A user is logged in, attempting to load dashboard for debugging.");
+                
+                document.getElementById('admin-content').style.display = 'block';
+                document.getElementById('loading-message').textContent = 'Loading...';
+                
+                // Directly call the function to load orders, bypassing the security check
+                await loadOrders(); 
+
+            } else {
+                // User is not logged in, deny access
+                showAccessDenied();
             }
         });
 
