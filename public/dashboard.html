@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - MGoMom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: #001E3C; color: #f7f7f7; margin: 0; padding: 2rem; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: #FFCB05; }
+        a { color: #FFCB05; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #022b59; }
+        th, td { padding: 12px 15px; border: 1px solid #001E3C; text-align: left; }
+        th { background-color: #00172d; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>My Orders</h1>
+        <p id="loading-message">Loading your orders...</p>
+        <div id="dashboard-content" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Service</th>
+                        <th>Student</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="my-orders-table-body">
+                    </tbody>
+            </table>
+        </div>
+         <p><a href="/index.html"> &larr; Back to Home</a></p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+            authDomain: "mgomom-33d39.firebaseapp.com",
+            projectId: "mgomom-33d39",
+            storageBucket: "mgomom-33d39.firebasestorage.app",
+            messagingSenderId: "431667209818",
+            appId: "1:431667209818:web:44544d38e97720a4425a63",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // User is logged in, fetch their orders
+                document.getElementById('dashboard-content').style.display = 'block';
+                const ordersTableBody = document.getElementById('my-orders-table-body');
+                
+                const ordersRef = collection(db, "orders");
+                // Create a query against the collection.
+                const q = query(ordersRef, where("userId", "==", user.uid), orderBy("createdAt", "desc"));
+
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    document.getElementById('loading-message').textContent = 'You have not placed any orders yet.';
+                } else {
+                    document.getElementById('loading-message').style.display = 'none';
+                }
+                
+                querySnapshot.forEach((doc) => {
+                    const order = doc.data();
+                    const row = ordersTableBody.insertRow();
+                    const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'Pending...';
+                    row.innerHTML = `
+                        <td>${date}</td>
+                        <td>${order.service}</td>
+                        <td>${order.studentName}</td>
+                        <td>${order.status}</td>
+                    `;
+                });
+            } else {
+                // No user is signed in. Redirect them.
+                document.getElementById('loading-message').textContent = 'Please sign in to view your orders. Redirecting...';
+                setTimeout(() => { window.location.href = '/index.html'; }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
