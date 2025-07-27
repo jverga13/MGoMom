@@ -184,125 +184,54 @@
   </script>
 
 <script type="module">
-    // Import the functions you need from the SDKs you need
+    // --- SDK IMPORTS ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    // ADD THESE for Authentication
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    // ADD THESE for Firestore database
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // Your web app's Firebase configuration
+    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
-      apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
-      authDomain: "mgomom-33d39.firebaseapp.com",
-      projectId: "mgomom-33d39",
-      storageBucket: "mgomom-33d39.firebasestorage.app",
-      messagingSenderId: "431667209818",
-      appId: "1:431667209818:web:44544d38e97720a4425a63",
-      measurementId: "G-BYE58ZXSNC"
+        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+        authDomain: "mgomom-33d39.firebaseapp.com",
+        projectId: "mgomom-33d39",
+        storageBucket: "mgomom-33d39.firebasestorage.app",
+        messagingSenderId: "431667209818",
+        appId: "1:431667209818:web:44544d38e97720a4425a63",
     };
 
-    // Initialize Firebase
+    // --- INITIALIZE ---
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-
-    // --- AUTHENTICATION JAVASCRIPT (Your existing code) ---
-
     const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    const loginButton = document.getElementById('login-button');
-    const logoutButton = document.getElementById('logout-button');
-    const userInfo = document.getElementById('user-info');
-    const userWelcome = document.getElementById('user-welcome');
-
-    loginButton.addEventListener('click', () => {
-      signInWithPopup(auth, provider)
-        .then((result) => {
-          console.log("Successfully signed in!", result.user);
-        }).catch((error) => {
-          console.error("Sign-in error", error.message);
-        });
-    });
-    
-    logoutButton.addEventListener('click', () => {
-        signOut(auth).then(() => {
-            console.log("User signed out.");
-        }).catch((error) => {
-            console.error("Sign out error", error);
-        });
-    });
-
-    // --- START: NEW FIRESTORE JAVASCRIPT ---
-
-    // Initialize Cloud Firestore and get a reference to the service
     const db = getFirestore(app);
 
-    // Get the form and the login-to-book button from the HTML
-    const bookingForm = document.getElementById('booking-form');
-    const loginToBookBtn = document.getElementById('login-to-book-btn');
-
-    // Listen for authentication state changes to show/hide elements
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in
-        userWelcome.textContent = `Welcome, ${user.displayName}!`;
-        loginButton.style.display = 'none';
-        userInfo.style.display = 'block';
-        
-        // Show the booking form for logged-in users
-        bookingForm.style.display = 'block';
-        loginToBookBtn.style.display = 'none';
-
-      } else {
-        // User is signed out
-        loginButton.style.display = 'block';
-        userInfo.style.display = 'none';
-
-        // Hide the booking form for logged-out users
-        bookingForm.style.display = 'none';
-        loginToBookBtn.style.display = 'block';
-      }
-    });
-
-    // Listen for the form submission
-    bookingForm.addEventListener('submit', (e) => {
-      e.preventDefault(); // Prevent the form from reloading the page
-
-      const user = auth.currentUser;
-      if (!user) {
-        alert("Please sign in to submit a request.");
-        return;
-      }
-
-      const selectedService = document.getElementById('service-select').value;
-      const serviceNotes = document.getElementById('service-notes').value;
-
-      if (!selectedService) {
-        alert("Please select a service.");
-        return;
-      }
-
-      // Add a new document with a generated ID to the "orders" collection
-      addDoc(collection(db, "orders"), {
-        userId: user.uid,
-        userEmail: user.email,
-        userName: user.displayName,
-        service: selectedService,
-        notes: serviceNotes,
-        status: "new",
-        createdAt: serverTimestamp()
-      }).then(() => {
-        alert("Your request has been submitted successfully!");
-        bookingForm.reset(); // Clear the form
-      }).catch((error) => {
-        console.error("Error adding document: ", error);
-        alert("There was an error submitting your request. Please try again.");
-      });
-    });
+    // --- AUTHENTICATION ---
+    const provider = new GoogleAuthProvider();
     
-</script>  
+    // Check for auth elements on the page before adding listeners
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    if(loginButton) {
+        loginButton.addEventListener('click', () => signInWithPopup(auth, provider));
+    }
+    if(logoutButton) {
+        logoutButton.addEventListener('click', () => signOut(auth));
+    }
+    
+    onAuthStateChanged(auth, (user) => {
+        const userInfo = document.getElementById('user-info');
+        const userWelcome = document.getElementById('user-welcome');
+        
+        if (user) { // User is signed IN
+            if(loginButton) loginButton.style.display = 'none';
+            if(userInfo) userInfo.style.display = 'block';
+            if(userWelcome) userWelcome.textContent = `Welcome, ${user.displayName}!`;
+        } else { // User is signed OUT
+            if(loginButton) loginButton.style.display = 'block';
+            if(userInfo) userInfo.style.display = 'none';
+        }
+    });
+
+</script>
 
 </body>
 </html>
