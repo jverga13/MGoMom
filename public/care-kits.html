@@ -21,7 +21,6 @@
       background-color: #FFCB05;
       padding: 0.75rem 2rem;
       gap: 1rem;
-      flex-wrap: nowrap;
     }
     .header-logo {
       max-height: 60px;
@@ -31,9 +30,9 @@
     nav {
       display: flex;
       gap: 1rem;
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      overflow-x: auto; /* Allows nav links to scroll on small screens */
       align-items: center;
+      flex-grow: 1; /* Allows nav to take up available space */
     }
     nav a {
       color: #001E3C;
@@ -43,11 +42,6 @@
       padding: 0.5rem 0.6rem;
       border-radius: 5px;
       white-space: nowrap;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    nav a:hover {
-      background-color: #001E3C;
-      color: #FFCB05;
     }
     .cta-button {
       background-color: #001E3C;
@@ -57,11 +51,6 @@
       border-radius: 5px;
       text-decoration: none;
       white-space: nowrap;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .cta-button:hover {
-      background-color: #FFCB05;
-      color: #001E3C;
     }
     main {
       max-width: 800px;
@@ -71,11 +60,6 @@
     h1 {
       font-size: 2rem;
       margin-bottom: 0.5rem;
-    }
-    .price {
-      font-size: 1rem;
-      color: #FFCB05;
-      font-weight: 700;
     }
     ul.services {
       list-style: none;
@@ -88,33 +72,20 @@
       margin-bottom: 0.75rem;
       border-radius: 6px;
     }
-    ul.services li h3 {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.25rem;
-    }
     footer {
       background-color: #00172d;
       color: #cccccc;
       padding: 2rem 1rem;
       text-align: center;
-      font-size: 0.9rem;
-      line-height: 1.4;
       margin-top: 3rem;
-    }
-    footer a {
-      color: #FFCB05;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <header class="top-bar">
-<a href="index.html">
-  <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
-</a>
+    <a href="index.html">
+      <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
+    </a>
     <nav>
       <a href="index.html">Home</a>
       <a href="care-kits.html">Care Kits</a>
@@ -124,42 +95,58 @@
       <a href="move-in.html">Move-In Help</a>
       <a href="airport-pickup.html">Airport Pickup</a>
       <a href="international.html">Out-of-State</a>
-      <a href="GOOGLE_FORM_URL" class="cta-button">Book Now</a>
     </nav>
+    <div id="auth-container">
+        <button id="login-button">Sign in with Google</button>
+        <div id="user-info" style="display: none;">
+            <p id="user-welcome" style="display: inline; margin-right: 1rem;"></p>
+            <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
+            <button id="logout-button">Sign Out</button>
+        </div>
+    </div>
   </header>
 
   <main>
-    <h1>Customized Care Kits <span class="price">Starts at $60</span></h1>
+    <h1>Customized Care Kits</h1>
     <p>Send your Wolverine a little love from afar! Our personalized care kits are perfect for birthdays, finals week, sick days, or just because.</p>
     <ul class="services">
-      <li>
-        <h3>Exam Stress Relief Kit</h3>
-        <p>Items like snacks, stress balls, and encouraging notes.</p>
-      </li>
-      <li>
-        <h3>Birthday or Holiday Box</h3>
-        <p>Seasonal goodies, treats, and decorations to celebrate.</p>
-      </li>
-      <li>
-        <h3>Sick Day Essentials Kit</h3>
-        <p>Soup, tea, tissues, and comfort items to help them feel better.</p>
-      </li>
+      <li><h3>Exam Stress Relief Kit</h3><p>Items like snacks, stress balls, and encouraging notes.</p></li>
+      <li><h3>Birthday or Holiday Box</h3><p>Seasonal goodies, treats, and decorations to celebrate.</p></li>
+      <li><h3>Sick Day Essentials Kit</h3><p>Soup, tea, tissues, and comfort items to help them feel better.</p></li>
     </ul>
-    <p>Each kit is personalized to your student’s preferences. We can include handwritten notes, favorite snacks, and any special requests.</p>
-        <a href="/booking.html" class="cta-button">Book This Service Now</a>
+    <a href="/booking.html" class="cta-button">Book This Service Now</a>
   </main>
 
   <footer>
     <section>
       <h3>How to Request</h3>
-      <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: 400px;">
-        <li><strong>Book Online:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLScML_67fyKunEMnl78vgbFPgI2NvHnoE1sJ_2398dxIHaqRNA/viewform?usp=sharing&ouid=107083262156525016261">Fill out the Request Form</a></li>
-        <li><strong>Call/Text:</strong> <a href="tel:+13138871856">+1 (313) 887-1856</a></li>
-        <li><strong>Email:</strong> <a href="mailto:marybethmgomom@gmail.com">marybethmgomom@gmail.com</a></li>
-      </ul>
-      <p style="margin-top: 1rem;"><em>Disclaimer: MGoMom is not a medical professional. In an emergency, call 911.</em></p>
-      <p style="margin-top: 1rem;">&copy; 2025 MGoMom. All rights reserved.</p>
+      <p>Please book online or contact us directly.</p>
     </section>
   </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    const firebaseConfig = { apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk", authDomain: "mgomom-33d39.firebaseapp.com", projectId: "mgomom-33d39", storageBucket: "mgomom-33d39.firebasestorage.app", messagingSenderId: "431667209818", appId: "1:431667209818:web:44544d38e97720a4425a63" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    if(loginButton) { loginButton.addEventListener('click', () => signInWithPopup(auth, provider)); }
+    if(logoutButton) { logoutButton.addEventListener('click', () => signOut(auth)); }
+    onAuthStateChanged(auth, (user) => {
+        const userInfo = document.getElementById('user-info');
+        const userWelcome = document.getElementById('user-welcome');
+        if (user) {
+            if(loginButton) loginButton.style.display = 'none';
+            if(userInfo) userInfo.style.display = 'flex'; // Use flex for better alignment
+            if(userWelcome) userWelcome.textContent = `Welcome, ${user.displayName}!`;
+        } else {
+            if(loginButton) loginButton.style.display = 'block';
+            if(userInfo) userInfo.style.display = 'none';
+        }
+    });
+  </script>
 </body>
 </html>
