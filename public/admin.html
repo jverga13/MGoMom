@@ -6,19 +6,19 @@
     <title>Admin Dashboard - MGoMom</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-    body { font-family: 'Nunito', sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 2rem; }
-    main { display: none; }
-    h1, h2 { color: #001E3C; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; vertical-align: top; }
-    th { background-color: #001E3C; color: #FFCB05; }
-    tr:nth-of-type(even) { background-color: #f9f9f9; }
-    select { padding: 8px; border-radius: 4px; }
-    .dashboard-section { margin-top: 2rem; }
-    /* NEW STYLE for contact info */
-    .customer-info { font-size: 0.9rem; }
-    .customer-info strong { color: #001E3C; }
-</style>
+        body { font-family: 'Nunito', sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 2rem; }
+        main { display: none; }
+        h1, h2 { color: #001E3C; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; vertical-align: top; }
+        th { background-color: #001E3C; color: #FFCB05; }
+        tr:nth-of-type(even) { background-color: #f9f9f9; }
+        select { padding: 8px; border-radius: 4px; }
+        .dashboard-section { margin-top: 2rem; }
+        .customer-info { font-size: 0.9rem; white-space: pre-wrap; } /* Allow line breaks */
+        .customer-info strong { color: #001E3C; }
+        .notes-cell { min-width: 200px; } /* Give notes column some space */
+    </style>
 </head>
 <body>
     <h1>MGoMom Admin Dashboard</h1>
@@ -27,41 +27,35 @@
         <div class="dashboard-section">
             <h2>Pending Approval</h2>
             <table>
-                <thead><tr><th>Customer Info</th><th>Service</th><th>Delivery Date</th><th>Action</th></tr></thead>
+                <!-- ADDED NOTES COLUMN -->
+                <thead><tr><th>Customer Info</th><th>Service Details</th><th>Additional Notes</th><th>Action</th></tr></thead>
                 <tbody id="pending-orders-body"></tbody>
             </table>
         </div>
         <div class="dashboard-section">
             <h2>Active Orders</h2>
             <table>
-                <thead><tr><th>Customer Info</th><th>Service</th><th>Delivery Date</th><th>Progress</th></tr></thead>
+                <!-- ADDED NOTES COLUMN -->
+                <thead><tr><th>Customer Info</th><th>Service Details</th><th>Additional Notes</th><th>Progress</th></tr></thead>
                 <tbody id="active-orders-body"></tbody>
             </table>
         </div>
         <div class="dashboard-section">
-            <h2>Completed Orders</h2>
+            <h2>Completed & Rejected Orders</h2>
             <table>
-                <thead><tr><th>Customer Info</th><th>Service</th><th>Delivery Date</th><th>Status</th></tr></thead>
-                <tbody id="completed-orders-body"></tbody>
-            </table>
-        </div>
-        <div class="dashboard-section">
-            <h2>Rejected Orders</h2>
-            <table>
-                <thead><tr><th>Customer Info</th><th>Service</th><th>Delivery Date</th><th>Status</th></tr></thead>
-                <tbody id="rejected-orders-body"></tbody>
+                 <!-- ADDED NOTES COLUMN -->
+                <thead><tr><th>Customer Info</th><th>Service Details</th><th>Additional Notes</th><th>Final Status</th></tr></thead>
+                <tbody id="finished-orders-body"></tbody>
             </table>
         </div>
     </main>
     <p id="error-message" style="display:none; color: red;">Access Denied. You will be redirected.</p>
 
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // This is the full, correct config object
         const firebaseConfig = {
             apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
             authDomain: "mgomom-33d39.firebaseapp.com",
@@ -76,6 +70,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // ... (showAccessDenied function remains the same) ...
         function showAccessDenied() {
             document.getElementById('loading-message').style.display = 'none';
             document.getElementById('error-message').style.display = 'block';
@@ -83,8 +78,7 @@
         }
 
         onAuthStateChanged(auth, (user) => {
-            const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12";
-
+            const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12"; // Your Mom's Admin UID
             if (user && user.uid === adminUid) {
                 document.getElementById('admin-content').style.display = 'block';
                 document.getElementById('loading-message').style.display = 'none';
@@ -99,10 +93,9 @@
             onSnapshot(query(ordersRef, orderBy("createdAt", "desc")), (snapshot) => {
                 const pendingBody = document.getElementById('pending-orders-body');
                 const activeBody = document.getElementById('active-orders-body');
-                const completedBody = document.getElementById('completed-orders-body');
-                const rejectedBody = document.getElementById('rejected-orders-body');
+                const finishedBody = document.getElementById('finished-orders-body');
                 
-                pendingBody.innerHTML = activeBody.innerHTML = completedBody.innerHTML = rejectedBody.innerHTML = '';
+                pendingBody.innerHTML = activeBody.innerHTML = finishedBody.innerHTML = '';
 
                 snapshot.forEach((docSnap) => {
                     const order = docSnap.data();
@@ -112,37 +105,55 @@
                         renderOrder(pendingBody, order, orderId);
                     } else if (order.approvalStatus === 'accepted' && order.progressStatus !== 'completed') {
                         renderOrder(activeBody, order, orderId);
-                    } else if (order.progressStatus === 'completed') {
-                        renderOrder(completedBody, order, orderId);
-                    } else if (order.approvalStatus === 'rejected') {
-                        renderOrder(rejectedBody, order, orderId);
+                    } else { // This now catches both 'completed' and 'rejected' orders
+                        renderOrder(finishedBody, order, orderId);
                     }
                 });
                 addEventListenersToDropdowns();
             });
         }
         
+        // COMPLETELY REVISED renderOrder FUNCTION
         function renderOrder(tbody, order, orderId) {
             const row = tbody.insertRow();
+
+            // Robustly handle potentially missing data
             const customerInfoCell = `
                 <div class="customer-info">
-                    <strong>Name:</strong> ${order.userName}<br>
-                    <strong>Email:</strong> ${order.userEmail}<br>
-                    <strong>Phone:</strong> ${order.userPhone}<br>
-                    <strong>Contact Pref:</strong> ${order.contactPreference}
+                    <strong>Name:</strong> ${order.userName || 'N/A'}<br>
+                    <strong>Email:</strong> ${order.userEmail || 'N/A'}<br>
+                    <strong>Phone:</strong> ${order.userPhone || 'N/A'}<br>
+                    <strong>Contact Pref:</strong> ${order.contactPreference || 'N/A'}
+                </div>
+            `;
+            
+            const serviceDetailsCell = `
+                <div>
+                    <strong>Service:</strong> ${order.service}<br>
+                    <strong>For:</strong> ${order.studentName}<br>
+                    <strong>Deliver On:</strong> ${order.deliveryDate}
                 </div>
             `;
 
+            // Display notes, or a message if there are none
+            const notesCell = `<td class="notes-cell">${order.notes || '<i>No notes provided.</i>'}</td>`;
+
             if (tbody.id === 'pending-orders-body') {
-                row.innerHTML = `<td>${customerInfoCell}</td><td>${order.service}</td><td>${order.deliveryDate}</td><td>${createApprovalDropdown(order, orderId)}</td>`;
+                row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td>${createApprovalDropdown(order, orderId)}</td>`;
             } else if (tbody.id === 'active-orders-body') {
-                row.innerHTML = `<td>${customerInfoCell}</td><td>${order.service}</td><td>${order.deliveryDate}</td><td>${createProgressDropdown(order, orderId)}</td>`;
-            } else {
-                const status = order.approvalStatus === 'rejected' ? 'Rejected' : 'Completed';
-                row.innerHTML = `<td>${customerInfoCell}</td><td>${order.service}</td><td>${order.deliveryDate}</td><td>${status}</td>`;
+                row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td>${createProgressDropdown(order, orderId)}</td>`;
+            } else { // Finished orders (Completed or Rejected)
+                const finalStatus = order.approvalStatus === 'rejected' ? 'Rejected' : 'Completed';
+                row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td><strong>${finalStatus}</strong></td>`;
             }
         }
 
+        // ... (createApprovalDropdown and createProgressDropdown functions remain the same) ...
+        function createApprovalDropdown(order, orderId) { /* ... same as before ... */ }
+        function createProgressDropdown(order, orderId) { /* ... same as before ... */ }
+        function addEventListenersToDropdowns() { /* ... same as before ... */ }
+
+        // --- PASTE THE UNCHANGED HELPER FUNCTIONS HERE ---
         function createApprovalDropdown(order, orderId) {
              return `<select data-order-id="${orderId}" data-field="approvalStatus" class="status-dropdown">
                         <option value="pending" ${order.approvalStatus === 'pending' ? 'selected' : ''}>Pending</option>
