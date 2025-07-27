@@ -43,58 +43,100 @@
     </p>
 
     <script type="module">
-        // --- SDK IMPORTS ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    // --- SDK IMPORTS ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // --- FIREBASE CONFIG ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
-            authDomain: "mgomom-33d39.firebaseapp.com",
-            projectId: "mgomom-33d39",
-            storageBucket: "mgomom-33d39.firebasestorage.app",
-            messagingSenderId: "431667209818",
-            appId: "1:431667209818:web:44544d38e97720a4425a63",
-        };
+    // --- FIREBASE CONFIG ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+        authDomain: "mgomom-33d39.firebaseapp.com",
+        projectId: "mgomom-33d39",
+        storageBucket: "mgomom-33d39.firebasestorage.app",
+        messagingSenderId: "431667209818",
+        appId: "1:431667209818:web:44544d38e97720a4425a63",
+    };
 
-        // --- INITIALIZE ---
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    // --- INITIALIZE ---
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        // --- AUTHENTICATION ---
-        const provider = new GoogleAuthProvider();
-        
-        // Check for auth elements on the page before adding listeners
-        const loginButton = document.getElementById('login-button');
-        const logoutButton = document.getElementById('logout-button');
-        if(loginButton) {
-            loginButton.addEventListener('click', () => signInWithPopup(auth, provider));
-        }
-        if(logoutButton) {
-            logoutButton.addEventListener('click', () => signOut(auth));
-        }
-        
-        // --- TEMPORARY DEBUGGING CODE ---
+    // --- ADMIN PAGE LOGIC ---
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // User is logged in. FOR NOW, we will assume they are the admin to test.
-                console.log("A user is logged in, attempting to load dashboard for debugging.");
-                
+    // This is the function that was missing
+    function showAccessDenied() {
+        document.getElementById('loading-message').style.display = 'none';
+        document.getElementById('error-message').style.display = 'block';
+        setTimeout(() => { window.location.href = '/index.html'; }, 3000);
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // **IMPORTANT**: Make sure this is your Mom's actual User ID
+            const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12";
+
+            if (user.uid === adminUid) {
                 document.getElementById('admin-content').style.display = 'block';
-                document.getElementById('loading-message').textContent = 'Loading...';
-                
-                // Directly call the function to load orders, bypassing the security check
-                await loadOrders(); 
-
+                document.getElementById('loading-message').textContent = 'Loading orders...';
+                await loadOrders();
             } else {
-                // User is not logged in, deny access
                 showAccessDenied();
             }
-        });
+        } else {
+            showAccessDenied();
+        }
+    });
+    
+    async function loadOrders() {
+        const ordersRef = collection(db, "orders");
+        const q = query(ordersRef, orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        
+        const ordersTableBody = document.getElementById('orders-table-body');
+        ordersTableBody.innerHTML = ''; 
+        
+        if (querySnapshot.empty) {
+            document.getElementById('loading-message').textContent = 'No orders found.';
+        } else {
+             document.getElementById('loading-message').style.display = 'none';
+        }
 
-    </script>
+        querySnapshot.forEach((docSnap) => {
+            const order = docSnap.data();
+            const orderId = docSnap.id;
+            const row = ordersTableBody.insertRow();
+            const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A';
+            const statusDropdown = `
+                <select data-order-id="${orderId}" class="status-dropdown">
+                    <option value="new" ${order.status === 'new' ? 'selected' : ''}>New</option>
+                    <option value="in-progress" ${order.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                    <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                </select>
+            `;
+            row.innerHTML = `<td>${date}</td><td>${order.userName}</td><td>${order.service}</td><td>${order.notes}</td><td>${statusDropdown}</td>`;
+        });
+        
+        addEventListenersToDropdowns();
+        }
+
+        function addEventListenersToDropdowns() {
+            const dropdowns = document.querySelectorAll('.status-dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('change', async (event) => {
+                    const newStatus = event.target.value;
+                    const orderId = event.target.dataset.orderId;
+                    const orderDocRef = doc(db, "orders", orderId);
+                    try {
+                        await updateDoc(orderDocRef, { status: newStatus });
+                        console.log(`Order ${orderId} updated to ${newStatus}`);
+                    } catch (error) {
+                        console.error("Error updating status: ", error);
+                    }
+                });
+            });
+        }
+        </script>
 </body>
 </html>
