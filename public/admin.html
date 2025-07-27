@@ -15,9 +15,9 @@
         tr:nth-of-type(even) { background-color: #f9f9f9; }
         select { padding: 8px; border-radius: 4px; }
         .dashboard-section { margin-top: 2rem; }
-        .customer-info { font-size: 0.9rem; white-space: pre-wrap; } /* Allow line breaks */
+        .customer-info { font-size: 0.9rem; white-space: pre-wrap; }
         .customer-info strong { color: #001E3C; }
-        .notes-cell { min-width: 200px; } /* Give notes column some space */
+        .notes-cell { min-width: 200px; font-style: italic; color: #555;}
     </style>
 </head>
 <body>
@@ -27,7 +27,6 @@
         <div class="dashboard-section">
             <h2>Pending Approval</h2>
             <table>
-                <!-- ADDED NOTES COLUMN -->
                 <thead><tr><th>Customer Info</th><th>Service Details</th><th>Additional Notes</th><th>Action</th></tr></thead>
                 <tbody id="pending-orders-body"></tbody>
             </table>
@@ -35,7 +34,6 @@
         <div class="dashboard-section">
             <h2>Active Orders</h2>
             <table>
-                <!-- ADDED NOTES COLUMN -->
                 <thead><tr><th>Customer Info</th><th>Service Details</th><th>Additional Notes</th><th>Progress</th></tr></thead>
                 <tbody id="active-orders-body"></tbody>
             </table>
@@ -43,7 +41,6 @@
         <div class="dashboard-section">
             <h2>Completed & Rejected Orders</h2>
             <table>
-                 <!-- ADDED NOTES COLUMN -->
                 <thead><tr><th>Customer Info</th><th>Service Details</th><th>Additional Notes</th><th>Final Status</th></tr></thead>
                 <tbody id="finished-orders-body"></tbody>
             </table>
@@ -70,7 +67,6 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ... (showAccessDenied function remains the same) ...
         function showAccessDenied() {
             document.getElementById('loading-message').style.display = 'none';
             document.getElementById('error-message').style.display = 'block';
@@ -105,7 +101,7 @@
                         renderOrder(pendingBody, order, orderId);
                     } else if (order.approvalStatus === 'accepted' && order.progressStatus !== 'completed') {
                         renderOrder(activeBody, order, orderId);
-                    } else { // This now catches both 'completed' and 'rejected' orders
+                    } else { 
                         renderOrder(finishedBody, order, orderId);
                     }
                 });
@@ -113,11 +109,8 @@
             });
         }
         
-        // COMPLETELY REVISED renderOrder FUNCTION
         function renderOrder(tbody, order, orderId) {
             const row = tbody.insertRow();
-
-            // Robustly handle potentially missing data
             const customerInfoCell = `
                 <div class="customer-info">
                     <strong>Name:</strong> ${order.userName || 'N/A'}<br>
@@ -126,7 +119,6 @@
                     <strong>Contact Pref:</strong> ${order.contactPreference || 'N/A'}
                 </div>
             `;
-            
             const serviceDetailsCell = `
                 <div>
                     <strong>Service:</strong> ${order.service}<br>
@@ -134,26 +126,18 @@
                     <strong>Deliver On:</strong> ${order.deliveryDate}
                 </div>
             `;
-
-            // Display notes, or a message if there are none
             const notesCell = `<td class="notes-cell">${order.notes || '<i>No notes provided.</i>'}</td>`;
 
             if (tbody.id === 'pending-orders-body') {
                 row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td>${createApprovalDropdown(order, orderId)}</td>`;
             } else if (tbody.id === 'active-orders-body') {
                 row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td>${createProgressDropdown(order, orderId)}</td>`;
-            } else { // Finished orders (Completed or Rejected)
+            } else {
                 const finalStatus = order.approvalStatus === 'rejected' ? 'Rejected' : 'Completed';
                 row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td><strong>${finalStatus}</strong></td>`;
             }
         }
 
-        // ... (createApprovalDropdown and createProgressDropdown functions remain the same) ...
-        function createApprovalDropdown(order, orderId) { /* ... same as before ... */ }
-        function createProgressDropdown(order, orderId) { /* ... same as before ... */ }
-        function addEventListenersToDropdowns() { /* ... same as before ... */ }
-
-        // --- PASTE THE UNCHANGED HELPER FUNCTIONS HERE ---
         function createApprovalDropdown(order, orderId) {
              return `<select data-order-id="${orderId}" data-field="approvalStatus" class="status-dropdown">
                         <option value="pending" ${order.approvalStatus === 'pending' ? 'selected' : ''}>Pending</option>
