@@ -40,7 +40,16 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        const firebaseConfig = { /* ... your config ... */ };
+        // This is the full, correct config object
+        const firebaseConfig = {
+            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+            authDomain: "mgomom-33d39.firebaseapp.com",
+            projectId: "mgomom-3d39",
+            storageBucket: "mgomom-33d39.firebasestorage.app",
+            messagingSenderId: "431667209818",
+            appId: "1:431667209818:web:44544d38e97720a4425a63",
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
