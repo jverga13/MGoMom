@@ -107,7 +107,8 @@
             const order = docSnap.data();
             const orderId = docSnap.id;
             const row = ordersTableBody.insertRow();
-            const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A';
+            // Check if createdAt exists before converting to date
+            const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'Pending...';
             const statusDropdown = `
                 <select data-order-id="${orderId}" class="status-dropdown">
                     <option value="new" ${order.status === 'new' ? 'selected' : ''}>New</option>
@@ -119,24 +120,24 @@
         });
         
         addEventListenersToDropdowns();
-        }
+    }
 
-        function addEventListenersToDropdowns() {
-            const dropdowns = document.querySelectorAll('.status-dropdown');
-            dropdowns.forEach(dropdown => {
-                dropdown.addEventListener('change', async (event) => {
-                    const newStatus = event.target.value;
-                    const orderId = event.target.dataset.orderId;
-                    const orderDocRef = doc(db, "orders", orderId);
-                    try {
-                        await updateDoc(orderDocRef, { status: newStatus });
-                        console.log(`Order ${orderId} updated to ${newStatus}`);
-                    } catch (error) {
-                        console.error("Error updating status: ", error);
-                    }
-                });
+    function addEventListenersToDropdowns() {
+        const dropdowns = document.querySelectorAll('.status-dropdown');
+        dropdowns.forEach(dropdown => {
+            dropdown.addEventListener('change', async (event) => {
+                const newStatus = event.target.value;
+                const orderId = event.target.dataset.orderId;
+                const orderDocRef = doc(db, "orders", orderId);
+                try {
+                    await updateDoc(orderDocRef, { status: newStatus });
+                    console.log(`Order ${orderId} updated to ${newStatus}`);
+                } catch (error) {
+                    console.error("Error updating status: ", error);
+                }
             });
-        }
-        </script>
+        });
+    }
+    </script>
 </body>
 </html>
