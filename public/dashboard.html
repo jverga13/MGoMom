@@ -38,10 +38,19 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        // ADD onSnapshot to the import
         import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        const firebaseConfig = { /* ... your full config ... */ };
+        // This is the full, correct config object
+        const firebaseConfig = {
+            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+            authDomain: "mgomom-33d39.firebaseapp.com",
+            projectId: "mgomom-33d39",
+            storageBucket: "mgomom-33d39.firebasestorage.app",
+            messagingSenderId: "431667209818",
+            appId: "1:431667209818:web:44544d38e97720a4425a63",
+            measurementId: "G-BYE58ZXSNC"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -53,9 +62,8 @@
                 
                 const q = query(collection(db, "orders"), where("userId", "==", user.uid), orderBy("createdAt", "desc"));
 
-                // Use onSnapshot for real-time updates
                 onSnapshot(q, (querySnapshot) => {
-                    ordersTableBody.innerHTML = ''; // Clear the table every time new data comes in
+                    ordersTableBody.innerHTML = ''; 
 
                     if (querySnapshot.empty) {
                         document.getElementById('loading-message').textContent = 'You have not placed any orders yet.';
