@@ -99,13 +99,10 @@
             if (user) {
                 bookingForm.style.display = 'block';
                 authMessage.style.display = 'none';
-                
-                // Display the user's verified email and pre-fill their name
-                userDisplayInfo.innerHTML = `<div class="static-info">Booking for Account: <strong>${user.email}</strong></div>`;
                 document.getElementById('parent-name').value = user.displayName || '';
-
+                document.getElementById('parent-email').value = user.email || ''; // Pre-fill email
             } else {
-                // If not logged in, redirect to a new login page
+                // This is the new redirect logic
                 window.location.href = `/login.html?redirect=${window.location.pathname}`;
             }
         });
