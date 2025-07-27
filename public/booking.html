@@ -9,50 +9,49 @@
         body { font-family: 'Nunito', sans-serif; background-color: #001E3C; color: #f7f7f7; margin: 0; padding: 2rem; }
         .form-container { max-width: 600px; margin: 0 auto; background-color: #022b59; padding: 2rem; border-radius: 8px; }
         h1 { color: #FFCB05; }
-        label { display: block; margin-top: 1rem; font-weight: 700; }
-        input, select, textarea { width: 100%; padding: 0.75rem; margin-top: 0.5rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; }
+        label, legend { display: block; margin-top: 1rem; font-weight: 700; }
+        input, select, textarea { width: 100%; padding: 0.75rem; margin-top: 0.5rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; box-sizing: border-box; }
         .cta-button { display: inline-block; width: 100%; text-align: center; background-color: #FFCB05; color: #001E3C; font-weight: 700; padding: 0.75rem 1rem; border-radius: 5px; border: none; font-size: 1.1rem; cursor: pointer; margin-top: 2rem; transition: background-color 0.3s; }
         .cta-button:hover { background-color: #f0c000; }
-        .service-section { display: none; border-top: 2px solid #FFCB05; margin-top: 1.5rem; padding-top: 1rem; }
-        #auth-message { text-align: center; font-size: 1.2rem; }
         #auth-message a { color: #FFCB05; font-weight: bold; }
+        /* Style for displaying the user's logged-in email */
+        .static-info { margin-top: 1rem; padding: 0.75rem; background-color: #00172d; border-radius: 4px; }
     </style>
 </head>
 <body>
 
     <div class="form-container">
         <h1>Book a Service</h1>
-        <div id="auth-message">
-            <p>Loading...</p>
-        </div>
+        <div id="auth-message"><p>Loading...</p></div>
 
         <form id="booking-form" style="display: none;">
+            
+            <!-- This section is now displayed by JavaScript -->
+            <div id="user-display-info"></div>
+
             <label for="parent-name">Your Full Name *</label>
             <input type="text" id="parent-name" required>
-
-            <!-- NEW: Email and Phone Number Fields -->
-            <label for="parent-email">Your Email Address *</label>
-            <input type="email" id="parent-email" required>
 
             <label for="parent-phone">Your Phone Number *</label>
             <input type="tel" id="parent-phone" placeholder="(123) 456-7890" required>
 
-            <!-- NEW: Preferred Contact Method -->
-            <fieldset style="border: none; padding: 0; margin-top: 1rem;">
-                <legend style="font-weight: 700; padding: 0;">Preferred Contact Method *</legend>
-                <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
-                    <label><input type="radio" name="contact-pref" value="Email" checked required> Email</label>
-                    <label><input type="radio" name="contact-pref" value="Text"> Text Message</label>
+            <fieldset style="border: none; padding: 0; margin: 1.5rem 0;">
+                <legend>Preferred Contact Method *</legend>
+                <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
+                    <label style="font-weight: normal;"><input type="radio" name="contact-pref" value="Email" checked required> Email</label>
+                    <label style="font-weight: normal;"><input type="radio" name="contact-pref" value="Text"> Text Message</label>
                 </div>
             </fieldset>
 
+            <hr style="border-color: #FFCB05; margin: 2rem 0;">
+
             <label for="student-name">Student's Full Name *</label>
             <input type="text" id="student-name" required>
-
+            
             <label for="student-address">Student's Campus Address (Dorm & Room #) *</label>
             <input type="text" id="student-address" required>
-
-            <label for="delivery-date">Desired Delivery Date *</label>
+            
+            <label for="delivery-date">Desired Delivery/Service Date *</label>
             <input type="date" id="delivery-date" required>
 
             <label for="service-select">Select a Service *</label>
@@ -66,14 +65,13 @@
                 <option value="Airport Pickup">Airport Pickup</option>
                 <option value="International Students">International & Out-of-State Support</option>
             </select>
-
+            
             <label for="service-notes">Additional Notes or Special Instructions</label>
             <textarea id="service-notes" placeholder="e.g., Please include a handwritten note..."></textarea>
 
             <button type="submit" class="cta-button">Submit Request</button>
         </form>
     </div>
-
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -95,68 +93,59 @@
 
         const bookingForm = document.getElementById('booking-form');
         const authMessage = document.getElementById('auth-message');
-        const serviceSelect = document.getElementById('service-select');
+        const userDisplayInfo = document.getElementById('user-display-info');
 
-        // Show/hide form based on login status
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 bookingForm.style.display = 'block';
                 authMessage.style.display = 'none';
-                // Pre-fill parent's name if available
+                
+                // Display the user's verified email and pre-fill their name
+                userDisplayInfo.innerHTML = `<div class="static-info">Booking for Account: <strong>${user.email}</strong></div>`;
                 document.getElementById('parent-name').value = user.displayName || '';
+
             } else {
-                bookingForm.style.display = 'none';
-                authMessage.innerHTML = '<p>You must be signed in to book a service. <a href="/index.html">Click here to sign in.</a></p>';
+                // If not logged in, redirect to a new login page
+                window.location.href = `/login.html?redirect=${window.location.pathname}`;
             }
         });
 
-        // Show/hide specific sections based on service selection
-        serviceSelect.addEventListener('change', () => {
-            document.querySelectorAll('.service-section').forEach(section => {
-                section.style.display = 'none';
-            });
-            const selectedValue = serviceSelect.value.toLowerCase().replace(/ /g, '-');
-            const sectionToShow = document.getElementById(`section-${selectedValue}`);
-            if (sectionToShow) {
-                sectionToShow.style.display = 'block';
-            }
-        });
-
-        // Handle the form submission
         bookingForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const user = auth.currentUser;
-        if (!user) return alert('You must be signed in!');
+            e.preventDefault();
+            const user = auth.currentUser;
+            if (!user) return alert('You must be signed in!');
 
-        const orderData = {
-            userId: user.uid,
-            userName: document.getElementById('parent-name').value,
-            // NEW FIELDS TO SAVE
-            userEmail: document.getElementById('parent-email').value,
-            userPhone: document.getElementById('parent-phone').value,
-            contactPreference: document.querySelector('input[name="contact-pref"]:checked').value,
+            const orderData = {
+                userId: user.uid,
+                // THIS IS THE FIX: Always use the verified user email
+                userEmail: user.email, 
+                userName: document.getElementById('parent-name').value,
+                // THIS IS THE FIX: Correctly read phone and preference
+                userPhone: document.getElementById('parent-phone').value,
+                contactPreference: document.querySelector('input[name="contact-pref"]:checked').value,
+                
+                studentName: document.getElementById('student-name').value,
+                studentAddress: document.getElementById('student-address').value,
+                deliveryDate: document.getElementById('delivery-date').value,
+                service: document.getElementById('service-select').value,
+                notes: document.getElementById('service-notes').value,
+                
+                approvalStatus: "pending", 
+                progressStatus: "not-started",
+                
+                createdAt: serverTimestamp()
+            };
 
-            studentName: document.getElementById('student-name').value,
-            studentAddress: document.getElementById('student-address').value,
-            deliveryDate: document.getElementById('delivery-date').value,
-            service: serviceSelect.value,
-            notes: document.getElementById('service-notes').value,
-
-            approvalStatus: "pending",
-            progressStatus: "not-started",
-
-            createdAt: serverTimestamp()
-        };
-
-        try {
-            await addDoc(collection(db, "orders"), orderData);
-            alert("Success! Your request has been submitted for approval.");
-            window.location.href = '/dashboard.html'; // Redirect to their orders page
-        } catch (error) {
-            console.error("Error submitting request:", error);
-            alert("There was an error. Please try again.");
-        }
-    });
+            try {
+                await addDoc(collection(db, "orders"), orderData);
+                alert("Success! Your request has been submitted for approval.");
+                // Redirect to the dashboard so they can see their new order
+                window.location.href = '/dashboard.html'; 
+            } catch (error) {
+                console.error("Error submitting request:", error);
+                alert("There was an error. Please try again.");
+            }
+        });
     </script>
 </body>
 </html>
