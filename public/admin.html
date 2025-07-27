@@ -28,8 +28,8 @@
                     <th>Delivery Date</th>
                     <th>Customer</th>
                     <th>Service</th>
-                    <th>Notes</th>
-                    <th>Status</th>
+                    <th>Approval</th>
+                    <th>Progress</th>
                 </tr>
             </thead>
             <tbody id="orders-table-body"></tbody>
@@ -49,7 +49,6 @@
             storageBucket: "mgomom-33d39.firebasestorage.app",
             messagingSenderId: "431667209818",
             appId: "1:431667209818:web:44544d38e97720a4425a63",
-            measurementId: "G-BYE58ZXSNC"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -63,18 +62,10 @@
         }
 
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // This is the variable for your mom's ID
-                const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12";
-
-                // This checks if the logged-in user is the admin
-                if (user.uid === adminUid) {
-                    document.getElementById('admin-content').style.display = 'block';
-                    document.getElementById('loading-message').style.display = 'none';
-                    await loadOrders();
-                } else {
-                    showAccessDenied();
-                }
+            if (user && user.uid === "4h6bsLOPXFZRVvCON340z0G3aV12") {
+                document.getElementById('admin-content').style.display = 'block';
+                document.getElementById('loading-message').style.display = 'none';
+                await loadOrders();
             } else {
                 showAccessDenied();
             }
@@ -91,12 +82,19 @@
                 const row = ordersTableBody.insertRow();
                 const submittedDate = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A';
                 
-                const statusDropdown = `
-                    <select data-order-id="${orderId}" class="status-dropdown">
-                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="accepted" ${order.status === 'accepted' ? 'selected' : ''}>Accepted</option>
-                        <option value="rejected" ${order.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                        <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                const approvalDropdown = `
+                    <select data-order-id="${orderId}" data-field="approvalStatus" class="status-dropdown">
+                        <option value="pending" ${order.approvalStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="accepted" ${order.approvalStatus === 'accepted' ? 'selected' : ''}>Accepted</option>
+                        <option value="rejected" ${order.approvalStatus === 'rejected' ? 'selected' : ''}>Rejected</option>
+                    </select>
+                `;
+
+                const progressDropdown = `
+                    <select data-order-id="${orderId}" data-field="progressStatus" class="status-dropdown">
+                        <option value="not-started" ${order.progressStatus === 'not-started' ? 'selected' : ''}>Not Started</option>
+                        <option value="in-progress" ${order.progressStatus === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="completed" ${order.progressStatus === 'completed' ? 'selected' : ''}>Completed</option>
                     </select>
                 `;
                 
@@ -105,8 +103,8 @@
                     <td>${order.deliveryDate || 'N/A'}</td>
                     <td>${order.userName}</td>
                     <td>${order.service}</td>
-                    <td>${order.notes}</td>
-                    <td>${statusDropdown}</td>
+                    <td>${approvalDropdown}</td>
+                    <td>${progressDropdown}</td>
                 `;
             });
             addEventListenersToDropdowns();
@@ -115,10 +113,15 @@
         function addEventListenersToDropdowns() {
             document.querySelectorAll('.status-dropdown').forEach(dropdown => {
                 dropdown.addEventListener('change', async (event) => {
-                    const newStatus = event.target.value;
+                    const newValue = event.target.value;
                     const orderId = event.target.dataset.orderId;
-                    await updateDoc(doc(db, "orders", orderId), { status: newStatus });
-                    alert(`Order status updated to ${newStatus}.`);
+                    const fieldToUpdate = event.target.dataset.field;
+                    
+                    const updateData = {};
+                    updateData[fieldToUpdate] = newValue;
+
+                    await updateDoc(doc(db, "orders", orderId), updateData);
+                    alert(`Order ${fieldToUpdate} updated to ${newValue}.`);
                 });
             });
         }

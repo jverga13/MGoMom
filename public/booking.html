@@ -109,18 +109,19 @@
             if (!user) return alert('You must be signed in!');
 
             const orderData = {
-                // User Info
                 userId: user.uid,
                 userEmail: user.email,
                 userName: document.getElementById('parent-name').value,
-                // Order Details
                 studentName: document.getElementById('student-name').value,
                 studentAddress: document.getElementById('student-address').value,
-                deliveryDate: document.getElementById('delivery-date').value, // <-- ADD THIS LINE
+                deliveryDate: document.getElementById('delivery-date').value,
                 service: serviceSelect.value,
                 notes: document.getElementById('service-notes').value,
-                // Status and Timestamp
-                status: "pending", // <-- Set default status to "pending"
+                
+                // NEW Default Statuses
+                approvalStatus: "pending", 
+                progressStatus: "not-started",
+                
                 createdAt: serverTimestamp()
             };
 
