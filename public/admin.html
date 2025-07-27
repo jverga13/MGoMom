@@ -6,16 +6,19 @@
     <title>Admin Dashboard - MGoMom</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Nunito', sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 2rem; }
-        main { display: none; }
-        h1, h2 { color: #001E3C; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #001E3C; color: #FFCB05; }
-        tr:nth-of-type(even) { background-color: #f9f9f9; }
-        select { padding: 8px; border-radius: 4px; }
-        .dashboard-section { margin-top: 2rem; }
-    </style>
+    body { font-family: 'Nunito', sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 2rem; }
+    main { display: none; }
+    h1, h2 { color: #001E3C; }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; vertical-align: top; }
+    th { background-color: #001E3C; color: #FFCB05; }
+    tr:nth-of-type(even) { background-color: #f9f9f9; }
+    select { padding: 8px; border-radius: 4px; }
+    .dashboard-section { margin-top: 2rem; }
+    /* NEW STYLE for contact info */
+    .customer-info { font-size: 0.9rem; }
+    .customer-info strong { color: #001E3C; }
+</style>
 </head>
 <body>
     <h1>MGoMom Admin Dashboard</h1>
@@ -24,33 +27,34 @@
         <div class="dashboard-section">
             <h2>Pending Approval</h2>
             <table>
-                <thead><tr><th>Submitted</th><th>Delivery Date</th><th>Customer</th><th>Service</th><th>Action</th></tr></thead>
+                <thead><tr><th>Customer Info</th><th>Service</th><th>Delivery Date</th><th>Action</th></tr></thead>
                 <tbody id="pending-orders-body"></tbody>
             </table>
         </div>
         <div class="dashboard-section">
             <h2>Active Orders</h2>
             <table>
-                <thead><tr><th>Delivery Date</th><th>Customer</th><th>Service</th><th>Progress</th></tr></thead>
+                <thead><tr><th>Customer Info</th><th>Service</th><th>Delivery Date</th><th>Progress</th></tr></thead>
                 <tbody id="active-orders-body"></tbody>
             </table>
         </div>
         <div class="dashboard-section">
             <h2>Completed Orders</h2>
             <table>
-                <thead><tr><th>Delivery Date</th><th>Customer</th><th>Service</th><th>Status</th></tr></thead>
+                <thead><tr><th>Customer Info</th><th>Service</th><th>Delivery Date</th><th>Status</th></tr></thead>
                 <tbody id="completed-orders-body"></tbody>
             </table>
         </div>
         <div class="dashboard-section">
             <h2>Rejected Orders</h2>
             <table>
-                <thead><tr><th>Delivery Date</th><th>Customer</th><th>Service</th><th>Status</th></tr></thead>
+                <thead><tr><th>Customer Info</th><th>Service</th><th>Delivery Date</th><th>Status</th></tr></thead>
                 <tbody id="rejected-orders-body"></tbody>
             </table>
         </div>
     </main>
     <p id="error-message" style="display:none; color: red;">Access Denied. You will be redirected.</p>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -120,14 +124,22 @@
         
         function renderOrder(tbody, order, orderId) {
             const row = tbody.insertRow();
-            const submittedDate = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A';
+            const customerInfoCell = `
+                <div class="customer-info">
+                    <strong>Name:</strong> ${order.userName}<br>
+                    <strong>Email:</strong> ${order.userEmail}<br>
+                    <strong>Phone:</strong> ${order.userPhone}<br>
+                    <strong>Contact Pref:</strong> ${order.contactPreference}
+                </div>
+            `;
 
             if (tbody.id === 'pending-orders-body') {
-                 row.innerHTML = `<td>${submittedDate}</td><td>${order.deliveryDate}</td><td>${order.userName}</td><td>${order.service}</td><td>${createApprovalDropdown(order, orderId)}</td>`;
+                row.innerHTML = `<td>${customerInfoCell}</td><td>${order.service}</td><td>${order.deliveryDate}</td><td>${createApprovalDropdown(order, orderId)}</td>`;
             } else if (tbody.id === 'active-orders-body') {
-                row.innerHTML = `<td>${order.deliveryDate}</td><td>${order.userName}</td><td>${order.service}</td><td>${createProgressDropdown(order, orderId)}</td>`;
+                row.innerHTML = `<td>${customerInfoCell}</td><td>${order.service}</td><td>${order.deliveryDate}</td><td>${createProgressDropdown(order, orderId)}</td>`;
             } else {
-                 row.innerHTML = `<td>${order.deliveryDate}</td><td>${order.userName}</td><td>${order.service}</td><td>${order.approvalStatus === 'rejected' ? 'Rejected' : 'Completed'}</td>`;
+                const status = order.approvalStatus === 'rejected' ? 'Rejected' : 'Completed';
+                row.innerHTML = `<td>${customerInfoCell}</td><td>${order.service}</td><td>${order.deliveryDate}</td><td>${status}</td>`;
             }
         }
 
