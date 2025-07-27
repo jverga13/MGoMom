@@ -124,36 +124,39 @@
 
         // Handle the form submission
         bookingForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const user = auth.currentUser;
-            if (!user) return alert('You must be signed in!');
+        e.preventDefault();
+        const user = auth.currentUser;
+        if (!user) return alert('You must be signed in!');
 
-            const orderData = {
-                userId: user.uid,
-                userEmail: user.email,
-                userName: document.getElementById('parent-name').value,
-                studentName: document.getElementById('student-name').value,
-                studentAddress: document.getElementById('student-address').value,
-                deliveryDate: document.getElementById('delivery-date').value,
-                service: serviceSelect.value,
-                notes: document.getElementById('service-notes').value,
-                
-                // NEW Default Statuses
-                approvalStatus: "pending", 
-                progressStatus: "not-started",
-                
-                createdAt: serverTimestamp()
-            };
+        const orderData = {
+            userId: user.uid,
+            userName: document.getElementById('parent-name').value,
+            // NEW FIELDS TO SAVE
+            userEmail: document.getElementById('parent-email').value,
+            userPhone: document.getElementById('parent-phone').value,
+            contactPreference: document.querySelector('input[name="contact-pref"]:checked').value,
 
-            try {
-                await addDoc(collection(db, "orders"), orderData);
-                alert("Success! Your request has been submitted for approval.");
-                window.location.href = '/index.html'; 
-            } catch (error) {
-                console.error("Error submitting request:", error);
-                alert("There was an error. Please try again.");
-            }
-        });
+            studentName: document.getElementById('student-name').value,
+            studentAddress: document.getElementById('student-address').value,
+            deliveryDate: document.getElementById('delivery-date').value,
+            service: serviceSelect.value,
+            notes: document.getElementById('service-notes').value,
+
+            approvalStatus: "pending",
+            progressStatus: "not-started",
+
+            createdAt: serverTimestamp()
+        };
+
+        try {
+            await addDoc(collection(db, "orders"), orderData);
+            alert("Success! Your request has been submitted for approval.");
+            window.location.href = '/dashboard.html'; // Redirect to their orders page
+        } catch (error) {
+            console.error("Error submitting request:", error);
+            alert("There was an error. Please try again.");
+        }
+    });
     </script>
 </body>
 </html>
