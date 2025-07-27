@@ -8,106 +8,128 @@
     <style>
         body { font-family: 'Nunito', sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 2rem; }
         main { display: none; }
-        h1 { color: #001E3C; }
+        h1, h2 { color: #001E3C; }
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; }
         th { background-color: #001E3C; color: #FFCB05; }
         tr:nth-of-type(even) { background-color: #f9f9f9; }
-        select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; font-family: 'Nunito', sans-serif; }
+        select { padding: 8px; border-radius: 4px; }
+        .dashboard-section { margin-top: 2rem; }
     </style>
 </head>
 <body>
     <h1>MGoMom Admin Dashboard</h1>
     <p id="loading-message">Verifying access...</p>
     <main id="admin-content">
-        <p>Welcome, Admin! Here are the current service requests.</p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Submitted</th>
-                    <th>Delivery Date</th>
-                    <th>Customer</th>
-                    <th>Service</th>
-                    <th>Approval</th>
-                    <th>Progress</th>
-                </tr>
-            </thead>
-            <tbody id="orders-table-body"></tbody>
-        </table>
+        <div class="dashboard-section">
+            <h2>Pending Approval</h2>
+            <table>
+                <thead><tr><th>Submitted</th><th>Delivery Date</th><th>Customer</th><th>Service</th><th>Action</th></tr></thead>
+                <tbody id="pending-orders-body"></tbody>
+            </table>
+        </div>
+        <div class="dashboard-section">
+            <h2>Active Orders</h2>
+            <table>
+                <thead><tr><th>Delivery Date</th><th>Customer</th><th>Service</th><th>Progress</th></tr></thead>
+                <tbody id="active-orders-body"></tbody>
+            </table>
+        </div>
+        <div class="dashboard-section">
+            <h2>Completed Orders</h2>
+            <table>
+                <thead><tr><th>Delivery Date</th><th>Customer</th><th>Service</th><th>Status</th></tr></thead>
+                <tbody id="completed-orders-body"></tbody>
+            </table>
+        </div>
+        <div class="dashboard-section">
+            <h2>Rejected Orders</h2>
+            <table>
+                <thead><tr><th>Delivery Date</th><th>Customer</th><th>Service</th><th>Status</th></tr></thead>
+                <tbody id="rejected-orders-body"></tbody>
+            </table>
+        </div>
     </main>
     <p id="error-message" style="display:none; color: red;">Access Denied. You will be redirected.</p>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
-            authDomain: "mgomom-33d39.firebaseapp.com",
-            projectId: "mgomom-33d39",
-            storageBucket: "mgomom-33d39.firebasestorage.app",
-            messagingSenderId: "431667209818",
-            appId: "1:431667209818:web:44544d38e97720a4425a63",
-        };
-
+        const firebaseConfig = { /* ... your full config ... */ };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        function showAccessDenied() {
-            document.getElementById('loading-message').style.display = 'none';
-            document.getElementById('error-message').style.display = 'block';
-            setTimeout(() => { window.location.href = '/index.html'; }, 3000);
-        }
+        function showAccessDenied() { /* ... */ }
 
-        onAuthStateChanged(auth, async (user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user && user.uid === "4h6bsLOPXFZRVvCON340z0G3aV12") {
                 document.getElementById('admin-content').style.display = 'block';
                 document.getElementById('loading-message').style.display = 'none';
-                await loadOrders();
+                listenForOrders();
             } else {
                 showAccessDenied();
             }
         });
 
-        async function loadOrders() {
-            const querySnapshot = await getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc")));
-            const ordersTableBody = document.getElementById('orders-table-body');
-            ordersTableBody.innerHTML = '';
-
-            querySnapshot.forEach((docSnap) => {
-                const order = docSnap.data();
-                const orderId = docSnap.id;
-                const row = ordersTableBody.insertRow();
-                const submittedDate = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A';
+        function listenForOrders() {
+            const ordersRef = collection(db, "orders");
+            onSnapshot(query(ordersRef, orderBy("createdAt", "desc")), (snapshot) => {
+                const pendingBody = document.getElementById('pending-orders-body');
+                const activeBody = document.getElementById('active-orders-body');
+                const completedBody = document.getElementById('completed-orders-body');
+                const rejectedBody = document.getElementById('rejected-orders-body');
                 
-                const approvalDropdown = `
-                    <select data-order-id="${orderId}" data-field="approvalStatus" class="status-dropdown">
-                        <option value="pending" ${order.approvalStatus === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="accepted" ${order.approvalStatus === 'accepted' ? 'selected' : ''}>Accepted</option>
-                        <option value="rejected" ${order.approvalStatus === 'rejected' ? 'selected' : ''}>Rejected</option>
-                    </select>
-                `;
+                // Clear all tables
+                pendingBody.innerHTML = activeBody.innerHTML = completedBody.innerHTML = rejectedBody.innerHTML = '';
 
-                const progressDropdown = `
-                    <select data-order-id="${orderId}" data-field="progressStatus" class="status-dropdown">
+                snapshot.forEach((docSnap) => {
+                    const order = docSnap.data();
+                    const orderId = docSnap.id;
+                    
+                    if (order.approvalStatus === 'pending') {
+                        renderOrder(pendingBody, order, orderId);
+                    } else if (order.approvalStatus === 'accepted' && order.progressStatus !== 'completed') {
+                        renderOrder(activeBody, order, orderId);
+                    } else if (order.progressStatus === 'completed') {
+                        renderOrder(completedBody, order, orderId);
+                    } else if (order.approvalStatus === 'rejected') {
+                        renderOrder(rejectedBody, order, orderId);
+                    }
+                });
+                addEventListenersToDropdowns();
+            });
+        }
+        
+        function renderOrder(tbody, order, orderId) {
+            const row = tbody.insertRow();
+            const submittedDate = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A';
+
+            if (tbody.id === 'pending-orders-body') {
+                 row.innerHTML = `<td>${submittedDate}</td><td>${order.deliveryDate}</td><td>${order.userName}</td><td>${order.service}</td><td>${createApprovalDropdown(order, orderId)}</td>`;
+            } else if (tbody.id === 'active-orders-body') {
+                row.innerHTML = `<td>${order.deliveryDate}</td><td>${order.userName}</td><td>${order.service}</td><td>${createProgressDropdown(order, orderId)}</td>`;
+            } else {
+                 row.innerHTML = `<td>${order.deliveryDate}</td><td>${order.userName}</td><td>${order.service}</td><td>${order.approvalStatus === 'rejected' ? 'Rejected' : 'Completed'}</td>`;
+            }
+        }
+
+        function createApprovalDropdown(order, orderId) {
+             return `<select data-order-id="${orderId}" data-field="approvalStatus" class="status-dropdown">
+                        <option value="pending" ${order.approvalStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="accepted" ${order.approvalStatus === 'accepted' ? 'selected' : ''}>Accept</option>
+                        <option value="rejected" ${order.approvalStatus === 'rejected' ? 'selected' : ''}>Reject</option>
+                    </select>`;
+        }
+        
+        function createProgressDropdown(order, orderId) {
+             return `<select data-order-id="${orderId}" data-field="progressStatus" class="status-dropdown">
                         <option value="not-started" ${order.progressStatus === 'not-started' ? 'selected' : ''}>Not Started</option>
                         <option value="in-progress" ${order.progressStatus === 'in-progress' ? 'selected' : ''}>In Progress</option>
                         <option value="completed" ${order.progressStatus === 'completed' ? 'selected' : ''}>Completed</option>
-                    </select>
-                `;
-                
-                row.innerHTML = `
-                    <td>${submittedDate}</td>
-                    <td>${order.deliveryDate || 'N/A'}</td>
-                    <td>${order.userName}</td>
-                    <td>${order.service}</td>
-                    <td>${approvalDropdown}</td>
-                    <td>${progressDropdown}</td>
-                `;
-            });
-            addEventListenersToDropdowns();
+                    </select>`;
         }
 
         function addEventListenersToDropdowns() {
@@ -115,13 +137,13 @@
                 dropdown.addEventListener('change', async (event) => {
                     const newValue = event.target.value;
                     const orderId = event.target.dataset.orderId;
-                    const fieldToUpdate = event.target.dataset.field;
+                    const field = event.target.dataset.field;
                     
                     const updateData = {};
-                    updateData[fieldToUpdate] = newValue;
+                    updateData[field] = newValue;
 
                     await updateDoc(doc(db, "orders", orderId), updateData);
-                    alert(`Order ${fieldToUpdate} updated to ${newValue}.`);
+                    // No alert needed, the UI will update automatically
                 });
             });
         }
