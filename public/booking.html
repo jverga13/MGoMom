@@ -35,6 +35,9 @@
             
             <label for="student-address">Student's Campus Address (Dorm & Room #) *</label>
             <input type="text" id="student-address" required>
+            
+            <label for="delivery-date">Desired Delivery Date *</label>
+            <input type="date" id="delivery-date" required>
 
             <label for="service-select">Select a Service *</label>
             <select id="service-select" required>
@@ -42,30 +45,10 @@
                 <option value="Care Kit">Customized Care Kit</option>
                 <option value="Local Delivery">Pickup for Local Delivery</option>
                 <option value="Urgent Care">Accompaniment to Urgent Care</option>
-                </select>
-
-            <div id="section-care-kit" class="service-section">
-                <label for="care-kit-type">Which Care Kit?</label>
-                <select id="care-kit-type">
-                    <option>Exam Stress Relief</option>
-                    <option>Birthday/Holiday Box</option>
-                    <option>Sick Day Essentials</option>
-                    <option>Customize My Own</option>
-                </select>
-                <label for="delivery-date">Preferred Delivery Date</label>
-                <input type="date" id="delivery-date">
-            </div>
+            </select>
             
-            <div id="section-urgent-care" class="service-section">
-                <p style="font-weight: bold;">If this is an emergency, please dial 911. For immediate help, call us directly.</p>
-                <label for="appointment-date">Date of Appointment</label>
-                <input type="date" id="appointment-date">
-                <label for="pickup-location">Pickup Location (On Campus)</label>
-                <input type="text" id="pickup-location" placeholder="e.g., Mosher-Jordan Lobby">
-            </div>
-
             <label for="service-notes">Additional Notes or Special Instructions</label>
-            <textarea id="service-notes" placeholder="e.g., Please include a handwritten note that says 'Good luck!'"></textarea>
+            <textarea id="service-notes" placeholder="e.g., Please include a handwritten note..."></textarea>
 
             <button type="submit" class="cta-button">Submit Request</button>
         </form>
@@ -133,17 +116,18 @@
                 // Order Details
                 studentName: document.getElementById('student-name').value,
                 studentAddress: document.getElementById('student-address').value,
+                deliveryDate: document.getElementById('delivery-date').value, // <-- ADD THIS LINE
                 service: serviceSelect.value,
                 notes: document.getElementById('service-notes').value,
                 // Status and Timestamp
-                status: "new",
+                status: "pending", // <-- Set default status to "pending"
                 createdAt: serverTimestamp()
             };
 
             try {
                 await addDoc(collection(db, "orders"), orderData);
-                alert("Success! Your request has been submitted. We will be in touch shortly.");
-                window.location.href = '/index.html'; // Redirect to home page after success
+                alert("Success! Your request has been submitted for approval.");
+                window.location.href = '/index.html'; 
             } catch (error) {
                 console.error("Error submitting request:", error);
                 alert("There was an error. Please try again.");

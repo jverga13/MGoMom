@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Nunito', sans-serif; background-color: #f4f4f9; color: #333; margin: 0; padding: 2rem; }
-        main { display: none; } /* Hide dashboard by default */
+        main { display: none; }
         h1 { color: #001E3C; }
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; }
@@ -17,130 +17,111 @@
     </style>
 </head>
 <body>
-
     <h1>MGoMom Admin Dashboard</h1>
-    <p id="loading-message">Loading orders...</p>
-
+    <p id="loading-message">Verifying access...</p>
     <main id="admin-content">
         <p>Welcome, Admin! Here are the current service requests.</p>
         <table>
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Customer Name</th>
+                    <th>Submitted</th>
+                    <th>Delivery Date</th>
+                    <th>Customer</th>
                     <th>Service</th>
                     <th>Notes</th>
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody id="orders-table-body">
-                </tbody>
+            <tbody id="orders-table-body"></tbody>
         </table>
     </main>
-
-    <p id="error-message" style="display:none; color: red; font-weight: bold;">
-      Access Denied. You must be an administrator to view this page. You will be redirected shortly.
-    </p>
+    <p id="error-message" style="display:none; color: red;">Access Denied. You will be redirected.</p>
 
     <script type="module">
-    // --- SDK IMPORTS ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // --- FIREBASE CONFIG ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
-        authDomain: "mgomom-33d39.firebaseapp.com",
-        projectId: "mgomom-33d39",
-        storageBucket: "mgomom-33d39.firebasestorage.app",
-        messagingSenderId: "431667209818",
-        appId: "1:431667209818:web:44544d38e97720a4425a63",
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+            authDomain: "mgomom-33d39.firebaseapp.com",
+            projectId: "mgomom-33d39",
+            storageBucket: "mgomom-33d39.firebasestorage.app",
+            messagingSenderId: "431667209818",
+            appId: "1:431667209818:web:44544d38e97720a4425a63",
+            measurementId: "G-BYE58ZXSNC"
+        };
 
-    // --- INITIALIZE ---
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-    // --- ADMIN PAGE LOGIC ---
+        function showAccessDenied() {
+            document.getElementById('loading-message').style.display = 'none';
+            document.getElementById('error-message').style.display = 'block';
+            setTimeout(() => { window.location.href = '/index.html'; }, 3000);
+        }
 
-    // This is the function that was missing
-    function showAccessDenied() {
-        document.getElementById('loading-message').style.display = 'none';
-        document.getElementById('error-message').style.display = 'block';
-        setTimeout(() => { window.location.href = '/index.html'; }, 3000);
-    }
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // This is the variable for your mom's ID
+                const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12";
 
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            // **IMPORTANT**: Make sure this is your Mom's actual User ID
-            const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12";
-
-            console.log("Logged-in User UID:", user.uid);
-            console.log("Required Admin UID:", adminUid);
-            
-            if (user.uid === adminUid) {
-                document.getElementById('admin-content').style.display = 'block';
-                document.getElementById('loading-message').textContent = 'Loading orders...';
-                await loadOrders();
+                // This checks if the logged-in user is the admin
+                if (user.uid === adminUid) {
+                    document.getElementById('admin-content').style.display = 'block';
+                    document.getElementById('loading-message').style.display = 'none';
+                    await loadOrders();
+                } else {
+                    showAccessDenied();
+                }
             } else {
                 showAccessDenied();
             }
-        } else {
-            showAccessDenied();
-        }
-    });
-    
-    async function loadOrders() {
-        const ordersRef = collection(db, "orders");
-        const q = query(ordersRef, orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        const ordersTableBody = document.getElementById('orders-table-body');
-        ordersTableBody.innerHTML = ''; 
-        
-        if (querySnapshot.empty) {
-            document.getElementById('loading-message').textContent = 'No orders found.';
-        } else {
-             document.getElementById('loading-message').style.display = 'none';
-        }
-
-        querySnapshot.forEach((docSnap) => {
-            const order = docSnap.data();
-            const orderId = docSnap.id;
-            const row = ordersTableBody.insertRow();
-            // Check if createdAt exists before converting to date
-            const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'Pending...';
-            const statusDropdown = `
-                <select data-order-id="${orderId}" class="status-dropdown">
-                    <option value="new" ${order.status === 'new' ? 'selected' : ''}>New</option>
-                    <option value="in-progress" ${order.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                    <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
-                </select>
-            `;
-            row.innerHTML = `<td>${date}</td><td>${order.userName}</td><td>${order.service}</td><td>${order.notes}</td><td>${statusDropdown}</td>`;
         });
-        
-        addEventListenersToDropdowns();
-    }
 
-    function addEventListenersToDropdowns() {
-        const dropdowns = document.querySelectorAll('.status-dropdown');
-        dropdowns.forEach(dropdown => {
-            dropdown.addEventListener('change', async (event) => {
-                const newStatus = event.target.value;
-                const orderId = event.target.dataset.orderId;
-                const orderDocRef = doc(db, "orders", orderId);
-                try {
-                    await updateDoc(orderDocRef, { status: newStatus });
-                    console.log(`Order ${orderId} updated to ${newStatus}`);
-                } catch (error) {
-                    console.error("Error updating status: ", error);
-                }
+        async function loadOrders() {
+            const querySnapshot = await getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc")));
+            const ordersTableBody = document.getElementById('orders-table-body');
+            ordersTableBody.innerHTML = '';
+
+            querySnapshot.forEach((docSnap) => {
+                const order = docSnap.data();
+                const orderId = docSnap.id;
+                const row = ordersTableBody.insertRow();
+                const submittedDate = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'N/A';
+                
+                const statusDropdown = `
+                    <select data-order-id="${orderId}" class="status-dropdown">
+                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="accepted" ${order.status === 'accepted' ? 'selected' : ''}>Accepted</option>
+                        <option value="rejected" ${order.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                        <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Completed</option>
+                    </select>
+                `;
+                
+                row.innerHTML = `
+                    <td>${submittedDate}</td>
+                    <td>${order.deliveryDate || 'N/A'}</td>
+                    <td>${order.userName}</td>
+                    <td>${order.service}</td>
+                    <td>${order.notes}</td>
+                    <td>${statusDropdown}</td>
+                `;
             });
-        });
-    }
+            addEventListenersToDropdowns();
+        }
+
+        function addEventListenersToDropdowns() {
+            document.querySelectorAll('.status-dropdown').forEach(dropdown => {
+                dropdown.addEventListener('change', async (event) => {
+                    const newStatus = event.target.value;
+                    const orderId = event.target.dataset.orderId;
+                    await updateDoc(doc(db, "orders", orderId), { status: newStatus });
+                    alert(`Order status updated to ${newStatus}.`);
+                });
+            });
+        }
     </script>
 </body>
 </html>
