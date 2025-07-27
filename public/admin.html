@@ -69,6 +69,9 @@
                 // IMPORTANT: Make sure this is your Mom's actual User ID
                 const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12";
 
+                console.log("Logged-in User UID:", user.uid);
+                console.log("Required Admin UID:", adminUid);
+
                 if (user.uid === adminUid) {
                     document.getElementById('admin-content').style.display = 'block';
                     document.getElementById('loading-message').textContent = 'Loading...';
