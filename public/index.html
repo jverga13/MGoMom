@@ -6,248 +6,139 @@
   <title>MGoMom</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* ... (all your existing CSS styles are here, no changes needed) ... */
-     * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Nunito', sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #001E3C;
-      color: #f7f7f7;
-      line-height: 1.6;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 1rem;
-      background-color: #FFCB05;
-      position: relative;
-      z-index: 1000;
-    }
-    .header-logo {
-      max-height: 48px;
-      width: auto;
-      flex-shrink: 1;
-      margin-right: 0.5rem;
-    }
-    .hamburger {
-      display: none;      /* hidden on desktop/tablet */
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: #001E3C;
-      margin-left: auto;
-    }
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 1rem; /* Adjusted gap for login elements */
-      flex-wrap: wrap;
-    }
-    nav a {
-      white-space: nowrap;
-      font-size: clamp(0.75rem, 1.8vw, 1rem);
-      padding: 0.4rem 0.6rem;
-      font-weight: 700;
-      color: #001E3C;
-      background-color: transparent;
-      border-radius: 4px;
-      transition: background-color 0.2s, color 0.2s;
-    }
-    nav a:hover {
-      background-color: #001E3C;
-      color: #FFCB05;
-    }
-    .cta-button {
-      background-color: #001E3C;
-      color: #FFCB05;
-      font-weight: 700;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      white-space: nowrap;
-      transition: background-color 0.3s, color 0.3s;
-    }
-    .cta-button:hover {
-      background-color: #FFCB05;
-      color: #001E3C;
-    }
-    main {
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    .hero {
-      background-color: #022b59;
-      padding: 2rem;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .hero h1 {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-    .hero p {
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .hero a {
-      text-decoration: none;
-    }
-    h2 {
-      margin-top: 2rem;
-      font-size: 1.75rem;
-    }
-    img.profile {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      margin-top: 1rem;
-    }
-    footer {
-      background-color: #00172d;
-      color: #cccccc;
-      padding: 2rem 1rem;
-      text-align: center;
-      font-size: 0.9rem;
-      margin-top: 3rem;
-      line-height: 1.4;
-    }
-    footer a {
-      color: #FFCB05;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
+    /* ... existing global styles ... */
+    body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+
+    /* --- HEADER & NAVBAR --- */
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
+    .header-logo { max-height: 48px; width: auto; }
+    
+    /* --- NAVIGATION --- */
+    nav { display: flex; align-items: center; gap: 1rem; }
+    nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
+    .cta-button { background-color: #001E3C; color: #FFCB05; font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; white-space: nowrap; }
+    
+    /* --- HAMBURGER ICON (Hidden by default) --- */
+    .hamburger { display: none; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
+
+    /* --- MAIN CONTENT & FOOTER --- */
+    main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .hero { background-color: #022b59; padding: 2rem; border-radius: 8px; text-align: center; }
+    footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; margin-top: 3rem; }
+
+    /* --- MOBILE STYLES (Screen width 800px or less) --- */
+    @media (max-width: 800px) {
+      /* Hide the desktop nav links */
+      .desktop-nav {
+        display: none;
+      }
+      /* Show the hamburger button */
+      .hamburger {
+        display: block;
+      }
+      /* Styles for the mobile dropdown menu */
+      .mobile-nav {
+        display: none; /* Hidden by default */
+        flex-direction: column;
+        gap: 0.5rem;
+        position: absolute;
+        top: 100%;
+        right: 1rem;
+        background-color: #FFCB05;
+        border-radius: 4px;
+        padding: 1rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      }
+      .mobile-nav a {
+        color: #001E3C;
+        font-weight: 700;
+      }
+      /* This class will be added by JavaScript to show the menu */
+      .mobile-nav.open {
+        display: flex;
+      }
     }
   </style>
 </head>
 <body>
-
   <header class="top-bar">
     <a href="index.html">
       <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
     </a>
-    <button class="hamburger" aria-label="Toggle menu">☰</button>
-    <nav>
-      <a href="care-kits.html" class="desktop-link">Care Kits</a>
-      <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
-      <a href="urgent-care.html">Urgent Care</a>
-      <a href="post-surgery.html">Emergency Care</a>
-      <a href="move-in.html">Move-In Help</a>
+
+    <nav class="desktop-nav">
+      <a href="care-kits.html">Care Kits</a>
+      <a href="deliveries.html">Local Deliveries</a>
       <a href="airport-pickup.html">Airport Pickup</a>
-      <a href="international.html">International Students</a>
-
-
       <div id="auth-container">
-    <div id="user-info" style="display: none;">
-        <p id="user-welcome"></p>
-        <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
-        <button id="logout-button">Sign Out</button>
-        </div>
-    </div>
-      </nav>
+          <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
+          <div id="user-info" style="display: none;">
+              <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
+              <button id="logout-button">Sign Out</button>
+          </div>
+      </div>
+    </nav>
+    
+    <button class="hamburger" aria-label="Toggle menu">☰</button>
+    
+    <nav class="mobile-nav" id="mobile-menu">
+        <a href="care-kits.html">Care Kits</a>
+        <a href="deliveries.html">Local Deliveries</a>
+        <a href="airport-pickup.html">Airport Pickup</a>
+        <hr>
+        <div id="mobile-auth-container">
+            </div>
+    </nav>
+
   </header>
 
   <main>
     <section class="hero">
-      <h1>A trusted Michigan Mom when you need her</h1>
-      <p>Personalized support for your student—deliveries, care kits, urgent visits, and more.</p>
-      <a href="/booking.html" id="hero-book-button" class="cta-button">Book a Service</a>
-      <p style="margin-top: 1rem; font-size: 0.9rem;">Typical response hours: 8 a.m.–10 p.m. ET</p>
-
-      <section>
-      <h2>About Me</h2>
-      <p>Hi, I’m B—the heart behind MGoMom. As a proud Michigan mom and long-time Ann Arbor local, I know how hard it is to have your child far from home. Whether it’s a forgotten medication, a tough exam day, or settling into a new dorm, I’m here to step in with practical help and motherly reassurance.</p>
-      <img src="IMG_0072.jpeg" alt="B and family at Michigan Stadium" class="profile" />
-      <p>This work brings me joy—connecting with families, comforting students, and ensuring someone they trust is close by. From a text for help to a drop-off of soup and tissues, MGoMom is ready to step in.</p>
-    </section>
+        </section>
   </main>
-
+  
   <footer>
-    <section>
-      <h3>How to Order or Contact Me</h3>
-      <p>Ready to request a service? Choose one of the following:</p>
-      <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: 400px;">
-        <li><strong>Book Online:</strong> <a href="/booking.html">Fill out the Request Form</a></li>
-        <li><strong>Call/Text:</strong> <a href="tel:+13034082997">+1 (303) 408-2997</a></li>
-        <li><strong>Email:</strong> <a href="mailto:lolidkrn@gmail.com">lolidkrn@gmail.com</a></li>
-      </ul>
-      <p style="margin-top: 1rem;"><em>Disclaimer: MGoMom is not a medical professional. In an emergency, please call 911 immediately.</em></p>
-      <p style="margin-top: 1rem;">&copy; 2025 MGoMom. All rights reserved.</p>
-    </section>
-  </footer>
+    </footer>
 
-  <script>
-    // ... (Your existing hamburger menu script is here, no changes needed) ...
-    const burger = document.querySelector('.hamburger');
-    const nav    = document.querySelector('nav');
-    burger.addEventListener('click', () => {
-      nav.classList.toggle('nav-open');
-    });
-    document.addEventListener('click', (e) => {
-      if (!nav.contains(e.target) && !burger.contains(e.target)) {
-        nav.classList.remove('nav-open');
-      }
+  <script type="module">
+    // --- Your existing Firebase and Auth logic ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    const firebaseConfig = { /* ... your config ... */ };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // --- Auth UI Logic ---
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const userInfo = document.getElementById('user-info');
+    const mobileAuthContainer = document.getElementById('mobile-auth-container');
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) { // User is LOGGED IN
+            loginButton.style.display = 'none';
+            userInfo.style.display = 'flex';
+            mobileAuthContainer.innerHTML = `<a href="/dashboard.html">My Orders</a><a href="#" id="mobile-logout">Sign Out</a>`;
+            document.getElementById('mobile-logout').addEventListener('click', () => signOut(auth));
+        } else { // User is LOGGED OUT
+            loginButton.style.display = 'block';
+            userInfo.style.display = 'none';
+            mobileAuthContainer.innerHTML = `<a href="/login.html">Sign In</a>`;
+        }
     });
   </script>
 
-<script type="module">
-    // --- SDK IMPORTS ---
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.querySelector('.hamburger');
+      const mobileMenu = document.getElementById('mobile-menu');
 
-    // --- FIREBASE CONFIG ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
-        authDomain: "mgomom-33d39.firebaseapp.com",
-        projectId: "mgomom-33d39",
-        storageBucket: "mgomom-33d39.firebasestorage.app",
-        messagingSenderId: "431667209818",
-        appId: "1:431667209818:web:44544d38e97720a4425a63",
-    };
-
-    // --- INITIALIZE ---
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // --- AUTHENTICATION ---
-    const provider = new GoogleAuthProvider();
-    
-    // Check for auth elements on the page before adding listeners
-    const loginButton = document.getElementById('login-button');
-    const logoutButton = document.getElementById('logout-button');
-    if(loginButton) {
-        loginButton.addEventListener('click', () => signInWithPopup(auth, provider));
-    }
-    if(logoutButton) {
-        logoutButton.addEventListener('click', () => signOut(auth));
-    }
-    
-    onAuthStateChanged(auth, (user) => {
-        const userInfo = document.getElementById('user-info');
-        const userWelcome = document.getElementById('user-welcome');
-        
-        if (user) { // User is signed IN
-            if(loginButton) loginButton.style.display = 'none';
-            if(userInfo) userInfo.style.display = 'block';
-            if(userWelcome) userWelcome.textContent = `Welcome, ${user.displayName}!`;
-        } else { // User is signed OUT
-            if(loginButton) loginButton.style.display = 'block';
-            if(userInfo) userInfo.style.display = 'none';
-        }
+      hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
     });
-
-</script>
+  </script>
 
 </body>
 </html>
