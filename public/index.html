@@ -32,12 +32,11 @@
 
     /* --- MOBILE STYLES (Screen width 800px or less) --- */
     @media (max-width: 800px) {
-      .desktop-nav { display: none; } /* Hide desktop nav */
-      .hamburger { display: block; }  /* Show hamburger */
+      .desktop-nav { display: none; }
+      .hamburger { display: block; }
 
-      /* Styles for the mobile dropdown menu */
       .mobile-nav {
-        display: none; /* Keep it hidden by default */
+        display: none;
         flex-direction: column;
         gap: 0.5rem;
         position: absolute;
@@ -50,11 +49,7 @@
         z-index: 100;
       }
       .mobile-nav a { color: #001E3C; font-weight: 700; }
-      
-      /* This class is added by JavaScript to show the menu */
-      .mobile-nav.open {
-        display: flex;
-      }
+      .mobile-nav.open { display: flex; }
     }
 </style>
 </head>
@@ -63,7 +58,6 @@
     <a href="index.html">
       <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
     </a>
-
     <nav class="desktop-nav">
       <a href="care-kits.html">Care Kits</a>
       <a href="deliveries.html">Local Deliveries</a>
@@ -76,9 +70,7 @@
         </div>
       </div>
     </nav>
-    
     <button class="hamburger" aria-label="Toggle menu">☰</button>
-    
     <nav class="mobile-nav" id="mobile-menu">
         <a href="care-kits.html">Care Kits</a>
         <a href="deliveries.html">Local Deliveries</a>
@@ -90,36 +82,56 @@
 
   <main>
     <section class="hero">
-        </section>
+      <h1>A trusted Michigan Mom when you need her</h1>
+      <p>Personalized support for your student—deliveries, care kits, urgent visits, and more.</p>
+      <a href="/booking.html" class="cta-button">Book a Service</a>
+    </section>
+    <section>
+      <h2>About Me</h2>
+      <p>Hi, I’m B—the heart behind MGoMom. As a proud Michigan mom and long-time Ann Arbor local, I know how hard it is to have your child far from home...</p>
+      <img src="IMG_0072.jpeg" alt="B and family at Michigan Stadium" style="max-width: 100%; border-radius: 12px; margin-top: 1rem;" />
+      <p>This work brings me joy—connecting with families, comforting students, and ensuring someone they trust is close by.</p>
+    </section>
   </main>
   
   <footer>
-    </footer>
+    <section>
+      <h3>How to Order or Contact Me</h3>
+      <p>Ready to request a service? Please sign in and book online, or contact me directly.</p>
+    </section>
+  </footer>
 
   <script type="module">
-    // --- Your existing Firebase and Auth logic ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    const firebaseConfig = { /* ... your config ... */ };
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    
+    const firebaseConfig = {
+        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+        authDomain: "mgomom-33d39.firebaseapp.com",
+        projectId: "mgomom-33d39",
+        storageBucket: "mgomom-33d39.firebasestorage.app",
+        messagingSenderId: "431667209818",
+        appId: "1:431667209818:web:44544d38e97720a4425a63",
+    };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // --- Auth UI Logic ---
     const loginButton = document.getElementById('login-button');
     const logoutButton = document.getElementById('logout-button');
     const userInfo = document.getElementById('user-info');
     const mobileAuthContainer = document.getElementById('mobile-auth-container');
 
     onAuthStateChanged(auth, (user) => {
-        if (user) { // User is LOGGED IN
-            loginButton.style.display = 'none';
-            userInfo.style.display = 'flex';
-            mobileAuthContainer.innerHTML = `<a href="/dashboard.html">My Orders</a><a href="#" id="mobile-logout">Sign Out</a>`;
-            document.getElementById('mobile-logout').addEventListener('click', () => signOut(auth));
-        } else { // User is LOGGED OUT
-            loginButton.style.display = 'block';
-            userInfo.style.display = 'none';
-            mobileAuthContainer.innerHTML = `<a href="/login.html">Sign In</a>`;
+        if (user) { 
+            if(loginButton) loginButton.style.display = 'none';
+            if(userInfo) userInfo.style.display = 'flex';
+            if(mobileAuthContainer) mobileAuthContainer.innerHTML = `<a href="/dashboard.html">My Orders</a><a href="#" id="mobile-logout">Sign Out</a>`;
+            const mobileLogout = document.getElementById('mobile-logout');
+            if(mobileLogout) mobileLogout.addEventListener('click', () => signOut(auth));
+        } else { 
+            if(loginButton) loginButton.style.display = 'block';
+            if(userInfo) userInfo.style.display = 'none';
+            if(mobileAuthContainer) mobileAuthContainer.innerHTML = `<a href="/login.html">Sign In</a>`;
         }
     });
   </script>
