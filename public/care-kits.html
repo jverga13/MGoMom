@@ -24,36 +24,31 @@
   <header class="top-bar">
     <a href="index.html"><img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" /></a>
     <nav>
-      <a href="care-kits.html" class="desktop-link">Care Kits</a>
-      <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
+      <a href="index.html">Home</a>
+      <a href="care-kits.html">Care Kits</a>
+      <a href="deliveries.html">Local Deliveries</a>
       <a href="urgent-care.html">Urgent Care</a>
-      <a href="post-surgery.html">Emergency Care</a>
-      <a href="move-in.html">Move-In Help</a>
-      <a href="airport-pickup.html">Airport Pickup</a>
-      <a href="international.html">International Students</a>
-
-
-      <div id="auth-container">
-    <button id="login-button">Sign in with Google</button>
-    <div id="user-info" style="display: none;">
-        <p id="user-welcome"></p>
-        <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
-        <button id="logout-button">Sign Out</button>
-        </div>
-    </div>
-      </nav>
-      
+    </nav>
     <a href="/booking.html" class="cta-button">Book Now</a>
   </header>
   <main>
     <h1>Customized Care Kits</h1>
     <p>Send your Wolverine a little love from afar! Our personalized care kits are perfect for birthdays, finals week, sick days, or just because.</p>
     <ul class="services">
-      <li><h3>Exam Stress Relief Kit</h3><p>Items like snacks, stress balls, and encouraging notes.</p></li>
-      <li><h3>Birthday or Holiday Box</h3><p>Seasonal goodies, treats, and decorations to celebrate.</p></li>
-      <li><h3>Sick Day Essentials Kit</h3><p>Soup, tea, tissues, and comfort items to help them feel better.</p></li>
+      <li class="clickable-service">
+        <h3>Exam Stress Relief Kit</h3>
+        <p>Items like snacks, stress balls, and encouraging notes.</p>
+      </li>
+      <li class="clickable-service">
+        <h3>Birthday or Holiday Box</h3>
+        <p>Seasonal goodies, treats, and decorations to celebrate.</p>
+      </li>
+      <li class="clickable-service">
+        <h3>Sick Day Essentials Kit</h3>
+        <p>Soup, tea, tissues, and comfort items to help them feel better.</p>
+      </li>
     </ul>
-    <a href="/booking.html" class="cta-button">Book This Service Now</a>
+    <a href="/booking.html" class="cta-button" id="book-now-button">Book This Service Now</a>
   </main>
   <footer>
     <section>
@@ -61,5 +56,20 @@
       <p>Please book online or contact us directly.</p>
     </section>
   </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const bookButton = document.getElementById('book-now-button');
+        const serviceBoxes = document.querySelectorAll('.clickable-service');
+
+        serviceBoxes.forEach(box => {
+            box.style.cursor = 'pointer'; // Make it look clickable
+            box.addEventListener('click', () => {
+                // Smoothly scroll the button into the middle of the view
+                bookButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+    });
+  </script>
 </body>
 </html>
