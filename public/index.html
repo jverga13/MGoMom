@@ -164,20 +164,27 @@
     const mobileAuthContainer = document.getElementById('mobile-auth-container');
     if (logoutButton) logoutButton.addEventListener('click', () => signOut(auth));
     onAuthStateChanged(auth, (user) => {
-        if (user) {
-            if (loginButton) loginButton.style.display = 'none';
-            if (userInfo) userInfo.style.display = 'flex';
-            if (mobileAuthContainer) {
-                mobileAuthContainer.innerHTML = `<a href="/dashboard.html">My Orders</a><a href="#" id="mobile-logout">Sign Out</a>`;
-                const mobileLogout = document.getElementById('mobile-logout');
-                if (mobileLogout) mobileLogout.addEventListener('click', () => signOut(auth));
-            }
-        } else {
-            if (loginButton) loginButton.style.display = 'block';
-            if (userInfo) userInfo.style.display = 'none';
-            if (mobileAuthContainer) mobileAuthContainer.innerHTML = `<a href="/login.html">Sign In</a>`;
+    if (user) { // User is LOGGED IN
+        if (loginButton) loginButton.style.display = 'none';
+        if (userInfo) userInfo.style.display = 'flex';
+        if (mobileAuthContainer) {
+            // This is the corrected line - each link is now in its own div
+            mobileAuthContainer.innerHTML = `
+                <div><a href="/dashboard.html">My Orders</a></div>
+                <div><a href="#" id="mobile-logout">Sign Out</a></div>
+            `;
+            const mobileLogout = document.getElementById('mobile-logout');
+            if (mobileLogout) mobileLogout.addEventListener('click', () => signOut(auth));
         }
-    });
+    } else { // User is LOGGED OUT
+        if (loginButton) loginButton.style.display = 'block';
+        if (userInfo) userInfo.style.display = 'none';
+        if (mobileAuthContainer) {
+             // This is the corrected line
+            mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
+        }
+    }
+});
   </script>
 
   <script>
