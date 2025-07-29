@@ -72,7 +72,7 @@
 </head>
 <body>
   <header class="top-bar">
-    <a href="index.html" class="header-logo-link">
+    <a href="index.html">
       <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
     </a>
 
@@ -84,17 +84,24 @@
       <a href="move-in.html">Move-In Help</a>
       <a href="airport-pickup.html">Airport Pickup</a>
       <a href="international.html">International Students</a>
-    </nav>
-
-    <div id="auth-container">
+      <div id="auth-container">
         <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
         <div id="user-info" style="display: none;">
             <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
             <button id="logout-button">Sign Out</button>
         </div>
-    </div>
+      </div>
+    </nav>
     
     <button class="hamburger" aria-label="Toggle menu">☰</button>
+    
+    <nav class="mobile-nav" id="mobile-menu">
+        <a href="care-kits.html">Care Kits</a>
+        <a href="deliveries.html">Local Deliveries</a>
+        <a href="airport-pickup.html">Airport Pickup</a>
+        <hr>
+        <div id="mobile-auth-container"></div>
+    </nav>
 </header>
 
   <main>
