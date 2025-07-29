@@ -11,20 +11,31 @@
     a { text-decoration: none; color: inherit; }
 
     /* Header & Navigation */
-    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
+    .top-bar { 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; /* This is the key change */
+        padding: 0.75rem 1rem; 
+        background-color: #FFCB05; 
+        position: relative; 
+    }
     .header-logo { max-height: 48px; width: auto; }
-    nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
-    .cta-button { background-color: #001E3C; color: #FFCB05; }
     
-    /* Desktop Navigation */
+    /* Desktop Navigation Links */
     .desktop-nav { 
         display: flex; 
-        align-items: center; /* This is the new line to vertically center everything */
+        align-items: center;
         gap: 1rem; 
-        flex-grow: 1; 
     }
-    #user-info { display: none; align-items: center; gap: 1rem; margin-left: auto; }
+    .desktop-nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
     
+    /* Auth Container */
+    #auth-container {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
     /* Hamburger Icon & Mobile Nav */
     .hamburger, .mobile-nav { display: none; }
 
@@ -35,19 +46,18 @@
 
     /* Mobile Styles */
     @media (max-width: 900px) {
-      .desktop-nav { display: none; }
+      .desktop-nav, #auth-container { display: none; }
       .hamburger { display: block; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
-      .mobile-nav { flex-direction: column; gap: 0.5rem; position: absolute; top: 100%; right: 0; background-color: #FFCB05; padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 100; }
-      .mobile-nav a { color: #001E3C; font-weight: 700; }
-      .mobile-nav.open { display: flex; }
+      /* ... other mobile styles ... */
     }
 </style>
 </head>
 <body>
   <header class="top-bar">
-    <a href="index.html">
+    <a href="index.html" class="header-logo-link">
       <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
     </a>
+
     <nav class="desktop-nav">
       <a href="care-kits.html" class="desktop-link">Care Kits</a>
       <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
@@ -56,24 +66,17 @@
       <a href="move-in.html">Move-In Help</a>
       <a href="airport-pickup.html">Airport Pickup</a>
       <a href="international.html">International Students</a>
-      <div id="user-info">
-        <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
-        <button id="logout-button">Sign Out</button>
-      </div>
-      <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
     </nav>
+
+    <div id="auth-container">
+        <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
+        <div id="user-info" style="display: none;">
+            <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
+            <button id="logout-button">Sign Out</button>
+        </div>
+    </div>
+    
     <button class="hamburger" aria-label="Toggle menu">☰</button>
-    <nav class="mobile-nav" id="mobile-menu">
-      <a href="care-kits.html" class="desktop-link">Care Kits</a>
-      <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
-      <a href="urgent-care.html">Urgent Care</a>
-      <a href="post-surgery.html">Emergency Care</a>
-      <a href="move-in.html">Move-In Help</a>
-      <a href="airport-pickup.html">Airport Pickup</a>
-      <a href="international.html">International Students</a>
-        <hr>
-        <div id="mobile-auth-container"></div>
-    </nav>
 </header>
 
   <main>
