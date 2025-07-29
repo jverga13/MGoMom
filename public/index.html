@@ -6,60 +6,57 @@
   <title>MGoMom</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* ... existing global styles ... */
+    /* Global Styles */
     body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; line-height: 1.6; }
     a { text-decoration: none; color: inherit; }
 
-    /* --- HEADER & NAVBAR --- */
+    /* Header & Navigation */
     .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
     .header-logo { max-height: 48px; width: auto; }
-    
-    /* --- NAVIGATION --- */
-    nav { display: flex; align-items: center; gap: 1rem; }
     nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
-    .cta-button { background-color: #001E3C; color: #FFCB05; font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; white-space: nowrap; }
+    .cta-button { background-color: #001E3C; color: #FFCB05; }
     
-    /* --- HAMBURGER ICON (Hidden by default) --- */
+    /* Desktop Navigation */
+    .desktop-nav { display: flex; align-items: center; gap: 1rem; }
+    
+    /* Hamburger Icon (Hidden on desktop) */
     .hamburger { display: none; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
+    
+    /* Mobile Navigation (Hidden on desktop) */
+    .mobile-nav { display: none; }
 
-    /* --- MAIN CONTENT & FOOTER --- */
+    /* Main Content & Footer */
     main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
     .hero { background-color: #022b59; padding: 2rem; border-radius: 8px; text-align: center; }
     footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; margin-top: 3rem; }
 
     /* --- MOBILE STYLES (Screen width 800px or less) --- */
     @media (max-width: 800px) {
-      /* Hide the desktop nav links */
-      .desktop-nav {
-        display: none;
-      }
-      /* Show the hamburger button */
-      .hamburger {
-        display: block;
-      }
+      .desktop-nav { display: none; } /* Hide desktop nav */
+      .hamburger { display: block; }  /* Show hamburger */
+
       /* Styles for the mobile dropdown menu */
       .mobile-nav {
-        display: none; /* Hidden by default */
+        display: none; /* Keep it hidden by default */
         flex-direction: column;
         gap: 0.5rem;
         position: absolute;
         top: 100%;
-        right: 1rem;
+        right: 0;
         background-color: #FFCB05;
-        border-radius: 4px;
+        border-radius: 0 0 0 4px;
         padding: 1rem;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 100;
       }
-      .mobile-nav a {
-        color: #001E3C;
-        font-weight: 700;
-      }
-      /* This class will be added by JavaScript to show the menu */
+      .mobile-nav a { color: #001E3C; font-weight: 700; }
+      
+      /* This class is added by JavaScript to show the menu */
       .mobile-nav.open {
         display: flex;
       }
     }
-  </style>
+</style>
 </head>
 <body>
   <header class="top-bar">
