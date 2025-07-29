@@ -18,6 +18,7 @@
     ul.services { list-style: none; padding: 0; margin: 1rem 0; }
     ul.services li { background-color: #022b59; padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; }
     footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; margin-top: 3rem; }
+    .clickable-service:hover { background-color: #0a3d7f; cursor: pointer; } /* Added hover effect */
   </style>
 </head>
 <body>
@@ -35,20 +36,11 @@
     <h1>Customized Care Kits</h1>
     <p>Send your Wolverine a little love from afar! Our personalized care kits are perfect for birthdays, finals week, sick days, or just because.</p>
     <ul class="services">
-      <li class="clickable-service">
-        <h3>Exam Stress Relief Kit</h3>
-        <p>Items like snacks, stress balls, and encouraging notes.</p>
-      </li>
-      <li class="clickable-service">
-        <h3>Birthday or Holiday Box</h3>
-        <p>Seasonal goodies, treats, and decorations to celebrate.</p>
-      </li>
-      <li class="clickable-service">
-        <h3>Sick Day Essentials Kit</h3>
-        <p>Soup, tea, tissues, and comfort items to help them feel better.</p>
-      </li>
+      <li class="clickable-service"><h3>Exam Stress Relief Kit</h3><p>Items like snacks, stress balls, and encouraging notes.</p></li>
+      <li class="clickable-service"><h3>Birthday or Holiday Box</h3><p>Seasonal goodies, treats, and decorations to celebrate.</p></li>
+      <li class="clickable-service"><h3>Sick Day Essentials Kit</h3><p>Soup, tea, tissues, and comfort items to help them feel better.</p></li>
     </ul>
-    <a href="/booking.html" class="cta-button" id="book-now-button">Book This Service Now</a>
+    <a href="/booking.html" class="cta-button">Book This Service Now</a>
   </main>
   <footer>
     <section>
@@ -57,16 +49,39 @@
     </section>
   </footer>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const bookButton = document.getElementById('book-now-button');
-        const serviceBoxes = document.querySelectorAll('.clickable-service');
+  <script type="module">
+    // --- Firebase SDK Imports ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    
+    // --- Firebase Config ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+        authDomain: "mgomom-33d39.firebaseapp.com",
+        projectId: "mgomom-33d39",
+        storageBucket: "mgomom-33d39.firebasestorage.app",
+        messagingSenderId: "431667209818",
+        appId: "1:431667209818:web:44544d38e97720a4425a63",
+    };
 
+    // --- Initialize ---
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // --- Click Logic ---
+    onAuthStateChanged(auth, (user) => {
+        const serviceBoxes = document.querySelectorAll('.clickable-service');
+        
         serviceBoxes.forEach(box => {
-            box.style.cursor = 'pointer'; // Make it look clickable
             box.addEventListener('click', () => {
-                // Smoothly scroll the button into the middle of the view
-                bookButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                if (user) {
+                    // If user is logged in, go to booking page
+                    window.location.href = '/booking.html';
+                } else {
+                    // If user is logged out, go to login page
+                    // We also pass a redirect parameter so they come back to booking after logging in
+                    window.location.href = '/login.html?redirect=/booking.html';
+                }
             });
         });
     });
