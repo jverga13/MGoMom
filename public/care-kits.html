@@ -19,97 +19,15 @@
     ul.services li { background-color: #022b59; padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; }
     footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; margin-top: 3rem; }
     .clickable-service:hover { background-color: #0a3d7f; cursor: pointer; } /* Added hover effect */
-  <style>
-    /* Global Styles */
-    body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; }
-    a { text-decoration: none; color: inherit; }
-
-    /* Header & Navigation */
-    .top-bar { 
-        display: flex; 
-        align-items: center; 
-        justify-content: space-between;
-        padding: 0.75rem 1rem; 
-        background-color: #FFCB05; 
-        position: relative; 
-    }
-    .header-logo { max-height: 48px; width: auto; }
-    
-    /* Desktop Navigation Links */
-    .desktop-nav { 
-        display: flex; 
-        align-items: center;
-        gap: 1rem; 
-    }
-    .desktop-nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
-    
-    /* Auth Container & CTA Button Style */
-    #auth-container { display: flex; align-items: center; gap: 1rem; }
-    .cta-button { font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; background-color: #001E3C; color: #FFCB05; }
-
-    #user-info a, #user-info button {
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    font-weight: 700;
-    }
-
-    #user-info button {
-        background-color: transparent;
-        border: 2px solid #001E3C;
-        color: #001E3C;
-        cursor: pointer;
-    }
-
-    /* Hamburger Icon & Mobile Nav */
-    .hamburger, .mobile-nav { display: none; }
-
-    /* Main Content & Footer */
-    main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-    .hero { background-color: #022b59; padding: 2rem; border-radius: 8px; text-align: center; }
-    footer {
-    background-color: #00172d;
-    color: #cccccc;
-    padding: 2rem 1rem;
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 3rem;
-    line-height: 1.4;
-    }
-    footer a {
-        color: #FFCB05;
-        text-decoration: none;
-    }
-    footer a:hover {
-        text-decoration: underline;
-    }
-
-    /* Mobile Styles */
-    @media (max-width: 900px) {
-      .desktop-nav, #auth-container { display: none; }
-      .hamburger { display: block; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
-      .mobile-nav {
-        display: none;
-        flex-direction: column;
-        gap: 0.5rem;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background-color: #FFCB05;
-        padding: 1rem;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        z-index: 100;
-      }
-      .mobile-nav a { color: #001E3C; font-weight: 700; }
-      .mobile-nav.open { display: flex; }
-    }
   </style>
 </head>
 <body>
   <header class="top-bar">
-    <a href="index.html" class="header-logo-link">
+    <a href="index.html">
       <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
     </a>
-    <nav class="desktop-nav">
+    <button class="hamburger" aria-label="Toggle menu">☰</button>
+    <nav>
       <a href="care-kits.html" class="desktop-link">Care Kits</a>
       <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
       <a href="urgent-care.html">Urgent Care</a>
@@ -117,26 +35,16 @@
       <a href="move-in.html">Move-In Help</a>
       <a href="airport-pickup.html">Airport Pickup</a>
       <a href="international.html">International Students</a>
-    </nav>
-    <div id="auth-container">
-        <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
-        <div id="user-info" style="display: none;">
-            <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
-            <button id="logout-button">Sign Out</button>
+
+
+      <div id="auth-container">
+    <div id="user-info" style="display: none;">
+        <p id="user-welcome"></p>
+        <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
+        <button id="logout-button">Sign Out</button>
         </div>
     </div>
-    <button class="hamburger" aria-label="Toggle menu">☰</button>
-    <nav class="mobile-nav" id="mobile-menu">
-        <a href="care-kits.html" class="desktop-link">Care Kits</a>
-      <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
-      <a href="urgent-care.html">Urgent Care</a>
-      <a href="post-surgery.html">Emergency Care</a>
-      <a href="move-in.html">Move-In Help</a>
-      <a href="airport-pickup.html">Airport Pickup</a>
-      <a href="international.html">International Students</a>
-        <hr>
-        <div id="mobile-auth-container"></div>
-    </nav>
+      </nav>
   </header>
   <main>
     <h1>Customized Care Kits</h1>
