@@ -6,28 +6,55 @@
   <title>Care Kits – MGoMom</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Your existing CSS goes here */
-    body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; line-height: 1.6; }
-    .top-bar { display: flex; align-items: center; justify-content: space-between; background-color: #FFCB05; padding: 0.75rem 2rem; gap: 1rem; }
-    .header-logo { max-height: 60px; width: auto; flex-shrink: 0; }
-    nav { display: flex; gap: 1rem; overflow-x: auto; align-items: center; flex-grow: 1; }
-    nav a { color: #001E3C; font-weight: 800; font-size: 1.05rem; text-decoration: none; padding: 0.5rem 0.6rem; border-radius: 5px; white-space: nowrap; }
-    .cta-button { background-color: #001E3C; color: #FFCB05; font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; text-decoration: none; white-space: nowrap; }
+    /* Global Styles */
+    body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Header & Navigation */
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
+    .header-logo { max-height: 48px; width: auto; }
+    
+    /* Desktop Navigation Links */
+    .desktop-nav { display: flex; align-items: center; gap: 1rem; }
+    .desktop-nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
+    
+    /* Auth Container & CTA Button Style */
+    #auth-container { display: flex; align-items: center; gap: 1rem; }
+    .cta-button { font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; background-color: #001E3C; color: #FFCB05; }
+    #user-info a, #user-info button { padding: 0.5rem 1rem; border-radius: 5px; font-weight: 700; }
+    #user-info button { background-color: transparent; border: 2px solid #001E3C; color: #001E3C; cursor: pointer; }
+
+    /* Hamburger Icon & Mobile Nav */
+    .hamburger, .mobile-nav { display: none; }
+
+    /* Main Content & Footer */
     main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
     h1 { font-size: 2rem; margin-bottom: 0.5rem; }
     ul.services { list-style: none; padding: 0; margin: 1rem 0; }
-    ul.services li { background-color: #022b59; padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; }
+    ul.services li { background-color: #022b59; padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; transition: background-color 0.3s; }
+    ul.services li:hover { background-color: #0a3d7f; cursor: pointer; }
     footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; margin-top: 3rem; }
-    .clickable-service:hover { background-color: #0a3d7f; cursor: pointer; } /* Added hover effect */
+    footer a { color: #FFCB05; }
+
+    /* Mobile Styles */
+    @media (max-width: 900px) {
+      .desktop-nav, #auth-container { display: none; }
+      .hamburger { display: block; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
+      .mobile-nav {
+        display: none; flex-direction: column; gap: 0.5rem; position: absolute; top: 100%; right: 0;
+        background-color: #FFCB05; padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 100;
+      }
+      .mobile-nav a { color: #001E3C; font-weight: 700; }
+      .mobile-nav.open { display: flex; }
+    }
   </style>
 </head>
 <body>
   <header class="top-bar">
-    <a href="index.html">
+    <a href="index.html" class="header-logo-link">
       <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
     </a>
-    <button class="hamburger" aria-label="Toggle menu">☰</button>
-    <nav>
+    <nav class="desktop-nav">
       <a href="care-kits.html" class="desktop-link">Care Kits</a>
       <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
       <a href="urgent-care.html">Urgent Care</a>
@@ -35,17 +62,28 @@
       <a href="move-in.html">Move-In Help</a>
       <a href="airport-pickup.html">Airport Pickup</a>
       <a href="international.html">International Students</a>
-
-
-      <div id="auth-container">
-    <div id="user-info" style="display: none;">
-        <p id="user-welcome"></p>
-        <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
-        <button id="logout-button">Sign Out</button>
+    </nav>
+    <div id="auth-container">
+        <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
+        <div id="user-info" style="display: none;">
+            <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
+            <button id="logout-button">Sign Out</button>
         </div>
     </div>
-      </nav>
+    <button class="hamburger" aria-label="Toggle menu">☰</button>
+    <nav class="mobile-nav" id="mobile-menu">
+        <a href="care-kits.html" class="desktop-link">Care Kits</a>
+      <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
+      <a href="urgent-care.html">Urgent Care</a>
+      <a href="post-surgery.html">Emergency Care</a>
+      <a href="move-in.html">Move-In Help</a>
+      <a href="airport-pickup.html">Airport Pickup</a>
+      <a href="international.html">International Students</a>
+        <hr>
+        <div id="mobile-auth-container"></div>
+    </nav>
   </header>
+
   <main>
     <h1>Customized Care Kits</h1>
     <p>Send your Wolverine a little love from afar! Our personalized care kits are perfect for birthdays, finals week, sick days, or just because.</p>
@@ -54,50 +92,69 @@
       <li class="clickable-service"><h3>Birthday or Holiday Box</h3><p>Seasonal goodies, treats, and decorations to celebrate.</p></li>
       <li class="clickable-service"><h3>Sick Day Essentials Kit</h3><p>Soup, tea, tissues, and comfort items to help them feel better.</p></li>
     </ul>
-    <a href="/booking.html" class="cta-button">Book One of These Kits Now</a>
+    <a href="/booking.html" class="cta-button">Book This Service Now</a>
   </main>
+
   <footer>
     <section>
       <h3>How to Request</h3>
-      <p>Please book online or contact us directly.</p>
+      <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: 400px;">
+        <li><strong>Book Online:</strong> <a href="/booking.html">Fill out the Request Form</a></li>
+        <li><strong>Call/Text:</strong> <a href="tel:+13138871856">+1 (313) 887-1856</a></li>
+        <li><strong>Email:</strong> <a href="mailto:marybethmgomom@gmail.com">marybethmgomom@gmail.com</a></li>
+      </ul>
     </section>
   </footer>
 
   <script type="module">
-    // --- Firebase SDK Imports ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    
-    // --- Firebase Config ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
-        authDomain: "mgomom-33d39.firebaseapp.com",
-        projectId: "mgomom-33d39",
-        storageBucket: "mgomom-33d39.firebasestorage.app",
-        messagingSenderId: "431667209818",
-        appId: "1:431667209818:web:44544d38e97720a4425a63",
-    };
-
-    // --- Initialize ---
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    const firebaseConfig = { apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk", authDomain: "mgomom-33d39.firebaseapp.com", projectId: "mgomom-33d39", storageBucket: "mgomom-33d39.firebasestorage.app", messagingSenderId: "431667209818", appId: "1:431667209818:web:44544d3g" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
-    // --- Click Logic ---
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const userInfo = document.getElementById('user-info');
+    const mobileAuthContainer = document.getElementById('mobile-auth-container');
+    if (logoutButton) logoutButton.addEventListener('click', () => signOut(auth));
+    
     onAuthStateChanged(auth, (user) => {
-        const serviceBoxes = document.querySelectorAll('.clickable-service');
+        // --- This part handles the login/logout buttons in the header ---
+        if (user) {
+            if (loginButton) loginButton.style.display = 'none';
+            if (userInfo) userInfo.style.display = 'flex';
+            if (mobileAuthContainer) {
+                mobileAuthContainer.innerHTML = `<div><a href="/dashboard.html">My Orders</a></div><div><a href="#" id="mobile-logout">Sign Out</a></div>`;
+                const mobileLogout = document.getElementById('mobile-logout');
+                if (mobileLogout) mobileLogout.addEventListener('click', () => signOut(auth));
+            }
+        } else {
+            if (loginButton) loginButton.style.display = 'block';
+            if (userInfo) userInfo.style.display = 'none';
+            if (mobileAuthContainer) mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
+        }
         
+        // --- This part handles the clickable service boxes ---
+        const serviceBoxes = document.querySelectorAll('.clickable-service');
         serviceBoxes.forEach(box => {
             box.addEventListener('click', () => {
                 if (user) {
-                    // If user is logged in, go to booking page
                     window.location.href = '/booking.html';
                 } else {
-                    // If user is logged out, go to login page
-                    // We also pass a redirect parameter so they come back to booking after logging in
                     window.location.href = '/login.html?redirect=/booking.html';
                 }
             });
         });
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.querySelector('.hamburger');
+      const mobileMenu = document.getElementById('mobile-menu');
+      hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
     });
   </script>
 </body>
