@@ -2,89 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MGoMom</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Urgent Care – MGoMom</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Global Styles */
     body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; }
     a { text-decoration: none; color: inherit; }
-
-    /* Header & Navigation */
-    .top-bar { 
-        display: flex; 
-        align-items: center; 
-        justify-content: space-between;
-        padding: 0.75rem 1rem; 
-        background-color: #FFCB05; 
-        position: relative; 
-    }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
     .header-logo { max-height: 48px; width: auto; }
-    
-    /* Desktop Navigation Links */
-    .desktop-nav { 
-        display: flex; 
-        align-items: center;
-        gap: 1rem; 
-    }
+    .desktop-nav { display: flex; align-items: center; gap: 1rem; }
     .desktop-nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
-    
-    /* Auth Container & CTA Button Style */
     #auth-container { display: flex; align-items: center; gap: 1rem; }
     .cta-button { font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; background-color: #001E3C; color: #FFCB05; }
-
-    #user-info a, #user-info button {
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    font-weight: 700;
-    }
-
-    #user-info button {
-        background-color: transparent;
-        border: 2px solid #001E3C;
-        color: #001E3C;
-        cursor: pointer;
-    }
-
-    /* Hamburger Icon & Mobile Nav */
+    #user-info a, #user-info button { padding: 0.5rem 1rem; border-radius: 5px; font-weight: 700; }
+    #user-info button { background-color: transparent; border: 2px solid #001E3C; color: #001E3C; cursor: pointer; }
     .hamburger, .mobile-nav { display: none; }
-
-    /* Main Content & Footer */
-    main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-    .hero { background-color: #022b59; padding: 2rem; border-radius: 8px; text-align: center; }
-    footer {
-    background-color: #00172d;
-    color: #cccccc;
-    padding: 2rem 1rem;
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 3rem;
-    line-height: 1.4;
-    }
-    footer a {
-        color: #FFCB05;
-        text-decoration: none;
-    }
-    footer a:hover {
-        text-decoration: underline;
-    }
-
-    /* Mobile Styles */
+    main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    ul.services { list-style: none; padding: 0; }
+    ul.services li { background-color: #022b59; padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; transition: background-color: 0.3s; }
+    ul.services li:hover { background-color: #0a3d7f; cursor: pointer; }
+    footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; margin-top: 3rem; }
+    footer a { color: #FFCB05; }
     @media (max-width: 900px) {
       .desktop-nav, #auth-container { display: none; }
       .hamburger { display: block; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
-      .mobile-nav {
-        display: none;
-        flex-direction: column;
-        gap: 0.5rem;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background-color: #FFCB05;
-        padding: 1rem;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        z-index: 100;
-      }
+      .mobile-nav { display: none; flex-direction: column; gap: 0.5rem; position: absolute; top: 100%; right: 0; background-color: #FFCB05; padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 100; }
       .mobile-nav a { color: #001E3C; font-weight: 700; }
       .mobile-nav.open { display: flex; }
     }
@@ -92,9 +34,7 @@
 </head>
 <body>
   <header class="top-bar">
-    <a href="index.html" class="header-logo-link">
-      <img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" />
-    </a>
+    <a href="index.html" class="header-logo-link"><img src="MGoMom horiz1.png" alt="MGoMom logo" class="header-logo" /></a>
     <nav class="desktop-nav">
       <a href="care-kits.html" class="desktop-link">Care Kits</a>
       <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
@@ -106,10 +46,7 @@
     </nav>
     <div id="auth-container">
         <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
-        <div id="user-info" style="display: none;">
-            <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
-            <button id="logout-button">Sign Out</button>
-        </div>
+        <div id="user-info" style="display: none;"><a href="/dashboard.html" style="font-weight: bold;">My Orders</a><button id="logout-button">Sign Out</button></div>
     </div>
     <button class="hamburger" aria-label="Toggle menu">☰</button>
     <nav class="mobile-nav" id="mobile-menu">
@@ -119,53 +56,30 @@
       <a href="post-surgery.html">Emergency Care</a>
       <a href="move-in.html">Move-In Help</a>
       <a href="airport-pickup.html">Airport Pickup</a>
-      <a href="international.html">International Students</a>
-        <hr>
-        <div id="mobile-auth-container"></div>
+      <a href="international.html">International Students</a><hr><div id="mobile-auth-container"></div>
     </nav>
   </header>
-
   <main>
-    <h1>Accompaniment to Urgent Care <span class="price">Starts at $65 for 1 hr</span></h1>
-    <p>When your student is sick or injured, it can be frightening—for them and for you. We offer trusted support by personally accompanying students to urgent care, ensuring they feel safe, cared for, and never alone. As a parent or guardian, you can have peace of mind knowing your child is receiving the attention and care they need.</p>
+    <h1>Accompaniment to Urgent Care</h1>
+    <p>When your student is sick or injured, we offer trusted support by accompanying them to urgent care.</p>
     <ul class="services">
-      <li>
-        <h3>First Hour Assistance</h3>
-        <p>Includes transportation (if needed) and check-in at the clinic. <em>$65 first hour.</em></p>
-      </li>
-      <li>
-        <h3>Additional Hourly Support</h3>
-        <p>Continued accompaniment and updates. <em>$30 per additional hour.</em></p>
-      </li>
-      <li>
-        <h3>Post-Visit Parent Check-In</h3>
-        <p>We’ll call/text to confirm everything went well at no extra charge.</p>
-      </li>
-      <li>
-        <h3>Healthcare Navigation</h3>
-        <p>Guidance on local healthcare options, referrals, and follow-up scheduling.</p>
-      </li>
+      <li class="clickable-service"><h3>First Hour Assistance</h3><p>Includes transportation and check-in at the clinic.</p></li>
+      <li class="clickable-service"><h3>Additional Hourly Support</h3><p>Continued accompaniment and updates.</p></li>
+      <li class="clickable-service"><h3>Post-Visit Parent Check-In</h3><p>We’ll call/text to confirm everything went well.</p></li>
     </ul>
-    <a href="/booking.html" class="cta-button">Book Now</a>
+    <a href="/booking.html" class="cta-button">Book This Service Now</a>
   </main>
-
   <footer>
     <section>
-      <h3>How to Order or Contact Me</h3>
-      <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: 400px;">
-        <li><strong>Book Online:</strong> <a href="/booking.html">Fill out the Request Form</a></li>
-        <li><strong>Call/Text:</strong> <a href="tel:+13138871856">+1 (313) 887-1856</a></li>
-        <li><strong>Email:</strong> <a href="mailto:marybethmgomom@gmail.com">marybethmgomom@gmail.com</a></li>
-      </ul>
-      <p style="margin-top: 1rem;"><em>Disclaimer: MGoMom is not a medical professional. In an emergency, call 911.</em></p>
-      <p style="margin-top: 1rem;">&copy; 2025 MGoMom. All rights reserved.</p>
+      <h3>How to Request</h3>
+      <p>Please book online or contact us directly.</p>
     </section>
-</footer>
+  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    const firebaseConfig = { apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk", authDomain: "mgomom-33d39.firebaseapp.com", projectId: "mgomom-33d39", storageBucket: "mgomom-33d39.firebasestorage.app", messagingSenderId: "431667209818", appId: "1:431667209818:web:44544d3g" };
+    const firebaseConfig = { apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk", authDomain: "mgomom-33d39.firebaseapp.com", projectId: "mgomom-33d39", storageBucket: "mgomom-33d39.firebasestorage.app", messagingSenderId: "431667209818", appId: "1:431667209818:web:44544d38e97720a4425a63" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const loginButton = document.getElementById('login-button');
@@ -173,28 +87,33 @@
     const userInfo = document.getElementById('user-info');
     const mobileAuthContainer = document.getElementById('mobile-auth-container');
     if (logoutButton) logoutButton.addEventListener('click', () => signOut(auth));
+    
     onAuthStateChanged(auth, (user) => {
-    if (user) { // User is LOGGED IN
-        if (loginButton) loginButton.style.display = 'none';
-        if (userInfo) userInfo.style.display = 'flex';
-        if (mobileAuthContainer) {
-            // This is the corrected line - each link is now in its own div
-            mobileAuthContainer.innerHTML = `
-                <div><a href="/dashboard.html">My Orders</a></div>
-                <div><a href="#" id="mobile-logout">Sign Out</a></div>
-            `;
-            const mobileLogout = document.getElementById('mobile-logout');
-            if (mobileLogout) mobileLogout.addEventListener('click', () => signOut(auth));
+        if (user) {
+            if (loginButton) loginButton.style.display = 'none';
+            if (userInfo) userInfo.style.display = 'flex';
+            if (mobileAuthContainer) {
+                mobileAuthContainer.innerHTML = `<div><a href="/dashboard.html">My Orders</a></div><div><a href="#" id="mobile-logout">Sign Out</a></div>`;
+                const mobileLogout = document.getElementById('mobile-logout');
+                if (mobileLogout) mobileLogout.addEventListener('click', () => signOut(auth));
+            }
+        } else {
+            if (loginButton) loginButton.style.display = 'block';
+            if (userInfo) userInfo.style.display = 'none';
+            if (mobileAuthContainer) mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
         }
-    } else { // User is LOGGED OUT
-        if (loginButton) loginButton.style.display = 'block';
-        if (userInfo) userInfo.style.display = 'none';
-        if (mobileAuthContainer) {
-             // This is the corrected line
-            mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
-        }
-    }
-});
+        
+        const serviceBoxes = document.querySelectorAll('.clickable-service');
+        serviceBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                if (user) {
+                    window.location.href = '/booking.html';
+                } else {
+                    window.location.href = '/login.html?redirect=/booking.html';
+                }
+            });
+        });
+    });
   </script>
 
   <script>

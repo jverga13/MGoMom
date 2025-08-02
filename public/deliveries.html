@@ -42,7 +42,13 @@
   <header class="top-bar">
     <a href="index.html" class="header-logo-link"><img src="MGoMom horiz1.png" alt="MGoMom logo" class="header-logo" /></a>
     <nav class="desktop-nav">
-      <a href="care-kits.html">Care Kits</a><a href="deliveries.html">Local Deliveries</a><a href="urgent-care.html">Urgent Care</a><a href="airport-pickup.html">Airport Pickup</a>
+      <a href="care-kits.html" class="desktop-link">Care Kits</a>
+      <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
+      <a href="urgent-care.html">Urgent Care</a>
+      <a href="post-surgery.html">Emergency Care</a>
+      <a href="move-in.html">Move-In Help</a>
+      <a href="airport-pickup.html">Airport Pickup</a>
+      <a href="international.html">International Students</a>
     </nav>
     <div id="auth-container">
         <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
@@ -50,7 +56,13 @@
     </div>
     <button class="hamburger" aria-label="Toggle menu">☰</button>
     <nav class="mobile-nav" id="mobile-menu">
-        <a href="care-kits.html">Care Kits</a><a href="deliveries.html">Local Deliveries</a><a href="urgent-care.html">Urgent Care</a><a href="airport-pickup.html">Airport Pickup</a><hr><div id="mobile-auth-container"></div>
+        <a href="care-kits.html" class="desktop-link">Care Kits</a>
+      <a href="deliveries.html" class="desktop-link">Local Deliveries</a>
+      <a href="urgent-care.html">Urgent Care</a>
+      <a href="post-surgery.html">Emergency Care</a>
+      <a href="move-in.html">Move-In Help</a>
+      <a href="airport-pickup.html">Airport Pickup</a>
+      <a href="international.html">International Students</a><hr><div id="mobile-auth-container"></div>
     </nav>
   </header>
   <main>
@@ -66,14 +78,18 @@
   <footer>
     <section>
       <h3>How to Request</h3>
-      <p>Please book online or contact us directly.</p>
+      <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: 400px;">
+        <li><strong>Book Online:</strong> <a href="/booking.html">Fill out the Request Form</a></li>
+        <li><strong>Call/Text:</strong> <a href="tel:+13138871856">+1 (313) 887-1856</a></li>
+        <li><strong>Email:</strong> <a href="mailto:marybethmgomom@gmail.com">marybethmgomom@gmail.com</a></li>
+      </ul>
     </section>
   </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    const firebaseConfig = { apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk", authDomain: "mgomom-3d39.firebaseapp.com", projectId: "mgomom-3d39", storageBucket: "mgomom-33d39.firebasestorage.app", messagingSenderId: "431667209818", appId: "1:431667209818:web:44544d3g" };
+    const firebaseConfig = { apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk", authDomain: "mgomom-33d39.firebaseapp.com", projectId: "mgomom-33d39", storageBucket: "mgomom-33d39.firebasestorage.app", messagingSenderId: "431667209818", appId: "1:431667209818:web:44544d3g" };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const loginButton = document.getElementById('login-button');
@@ -83,6 +99,7 @@
     if (logoutButton) logoutButton.addEventListener('click', () => signOut(auth));
     
     onAuthStateChanged(auth, (user) => {
+        // --- This part handles the login/logout buttons in the header ---
         if (user) {
             if (loginButton) loginButton.style.display = 'none';
             if (userInfo) userInfo.style.display = 'flex';
@@ -97,6 +114,7 @@
             if (mobileAuthContainer) mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
         }
         
+        // --- This part handles the clickable service boxes ---
         const serviceBoxes = document.querySelectorAll('.clickable-service');
         serviceBoxes.forEach(box => {
             box.addEventListener('click', () => {
