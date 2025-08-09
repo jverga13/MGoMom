@@ -5,6 +5,13 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "redirects": [
+      {
+        "source": "/private/**",
+        "destination": "/index.html",
+        "type": 302
+      }
     ]
   },
   "functions": [
