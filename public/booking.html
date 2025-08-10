@@ -1,146 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book a Service - MGoMom</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Nunito', sans-serif; background-color: #001E3C; color: #f7f7f7; margin: 0; padding: 2rem; }
-        .form-container { max-width: 600px; margin: 0 auto; background-color: #022b59; padding: 2rem; border-radius: 8px; }
-        h1 { color: #FFCB05; }
-        label, legend { display: block; margin-top: 1rem; font-weight: 700; }
-        input, select, textarea { width: 100%; padding: 0.75rem; margin-top: 0.5rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; box-sizing: border-box; }
-        .cta-button { display: inline-block; width: 100%; text-align: center; background-color: #FFCB05; color: #001E3C; font-weight: 700; padding: 0.75rem 1rem; border-radius: 5px; border: none; font-size: 1.1rem; cursor: pointer; margin-top: 2rem; transition: background-color 0.3s; }
-        .cta-button:hover { background-color: #f0c000; }
-        #auth-message a { color: #FFCB05; font-weight: bold; }
-        /* Style for displaying the user's logged-in email */
-        .static-info { margin-top: 1rem; padding: 0.75rem; background-color: #00172d; border-radius: 4px; }
+        /* Global Styles */
+        body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; }
+        a { text-decoration: none; color: inherit; }
+
+        /* Header & Navigation */
+        .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
+        .header-logo { max-height: 48px; width: auto; }
+        .desktop-nav { display: flex; align-items: center; gap: 1rem; }
+        .desktop-nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
+        
+        /* Main Content & Form Styles */
+        main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+        .booking-container { background-color: #022b59; padding: 2rem; border-radius: 8px; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 700; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 5px;
+            border: 1px solid #0a3d7f;
+            background-color: #001E3C;
+            color: #f7f7f7;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .cta-button { font-weight: 700; padding: 0.75rem 1.5rem; border-radius: 5px; background-color: #FFCB05; color: #001E3C; border: none; font-size: 1rem; cursor: pointer; width: 100%; }
+        #form-message { margin-top: 1rem; text-align: center; font-weight: bold; }
+        
+        /* Storage List for Move-In */
+        #storage-list-container { margin-top: 1rem; }
+        #storage-list { list-style: none; padding: 0; }
+        #storage-list li { display: flex; justify-content: space-between; align-items: center; background-color: #00172d; padding: 0.5rem; border-radius: 4px; margin-bottom: 0.5rem; }
+        .disclaimer { font-size: 0.8rem; color: #cccccc; font-style: italic; }
+
+        /* Mobile Styles */
+        @media (max-width: 900px) { .desktop-nav { display: none; } }
     </style>
 </head>
 <body>
+    <header class="top-bar">
+        <a href="index.html" class="header-logo-link"><img src="MGoMom horiz1.png" alt="MGoMom logo" class="header-logo" /></a>
+        <nav class="desktop-nav">
+             <a href="care-kits.html">Care Kits</a>
+             <a href="deliveries.html">Local Deliveries</a>
+             <a href="urgent-care.html">Urgent Care</a>
+             <a href="post-surgery.html">Emergency Care</a>
+             <a href="move-in.html">Move-In Help</a>
+             <a href="airport-pickup.html">Airport Pickup</a>
+             <a href="international.html">International Students</a>
+             <a href="faq.html">FAQ</a>
+        </nav>
+    </header>
 
-    <div class="form-container">
-        <h1>Book a Service</h1>
-        <div id="auth-message"><p>Loading...</p></div>
-
-        <form id="booking-form" style="display: none;">
+    <main>
+        <div class="booking-container">
+            <h1 style="text-align: center; color: #FFCB05;">Book a Service</h1>
+            <p style="text-align: center;">Please fill out the form below. For urgent requests, please call or text.</p>
             
-            <!-- This section is now displayed by JavaScript -->
-            <div id="user-display-info"></div>
-
-            <label for="parent-name">Your Full Name *</label>
-            <input type="text" id="parent-name" required>
-
-            <label for="parent-phone">Your Phone Number *</label>
-            <input type="tel" id="parent-phone" placeholder="(123) 456-7890" required>
-
-            <fieldset style="border: none; padding: 0; margin: 1.5rem 0;">
-                <legend>Preferred Contact Method *</legend>
-                <div style="display: flex; gap: 1.5rem; margin-top: 0.5rem;">
-                    <label style="font-weight: normal;"><input type="radio" name="contact-pref" value="Email" checked required> Email</label>
-                    <label style="font-weight: normal;"><input type="radio" name="contact-pref" value="Text"> Text Message</label>
+            <form id="booking-form">
+                <div class="form-group">
+                    <label for="service-type">Select a Service</label>
+                    <select id="service-type" name="serviceType" required>
+                        <option value="">-- Please choose a service --</option>
+                        <option value="care-kit">Customized Care Kit</option>
+                        <option value="urgent-care">Urgent Care Assistance</option>
+                        <option value="emergency-care">Emergency Care Assistance</option>
+                        <option value="move-in">Move-In / Move-Out Help</option>
+                        <option value="airport-pickup">Airport Pickup</option>
+                        <option value="international-package">International Student Package</option>
+                    </select>
                 </div>
-            </fieldset>
 
-            <hr style="border-color: #FFCB05; margin: 2rem 0;">
+                <div id="care-kit-fields" class="service-fields" style="display:none;">
+                    <div class="form-group">
+                        <label for="kit-type">Kit Type</label>
+                        <select id="kit-type" name="kitType">
+                            <option value="exam-stress">Exam Stress Relief Kit</option>
+                            <option value="birthday-holiday">Birthday or Holiday Box</option>
+                            <option value="sick-day">Sick Day Essentials</option>
+                        </select>
+                    </div>
+                </div>
 
-            <label for="student-name">Student's Full Name *</label>
-            <input type="text" id="student-name" required>
-            
-            <label for="student-address">Student's Campus Address (Dorm & Room #) *</label>
-            <input type="text" id="student-address" required>
-            
-            <label for="delivery-date">Desired Delivery/Service Date *</label>
-            <input type="date" id="delivery-date" required>
+                <div id="urgent-care-fields" class="service-fields" style="display:none;">
+                    <div class="form-group">
+                        <label for="assistance-datetime">Date and Time for Assistance</label>
+                        <input type="datetime-local" id="assistance-datetime" name="assistanceDateTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="facility-name">Urgent Care Facility</label>
+                        <input type="text" id="facility-name" name="facilityName" placeholder="e.g., University Health Service">
+                    </div>
+                    <div class="form-group">
+                        <label for="injury-sickness">Reason for Visit (Injury/Sickness)</label>
+                        <textarea id="injury-sickness" name="injurySickness"></textarea>
+                    </div>
+                </div>
+                
+                <div id="move-in-fields" class="service-fields" style="display:none;">
+                    <div class="form-group">
+                        <label>Service Type</label>
+                        <input type="radio" id="move-in-radio" name="moveType" value="move-in" checked> <label for="move-in-radio">Move-In</label>
+                        <input type="radio" id="move-out-radio" name="moveType" value="move-out"> <label for="move-out-radio">Move-Out</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="move-address">Student's Address</label>
+                        <input type="text" id="move-address" name="moveAddress" placeholder="e.g., 123 Main St, Ann Arbor, MI">
+                    </div>
+                    <div id="storage-section" class="form-group">
+                        <label>Would you like to ship items to my house before moving in?</label>
+                        <input type="checkbox" id="ship-items-checkbox" name="shipItems"> <label for="ship-items-checkbox">Yes, I want to store items</label>
+                        <div id="storage-list-container" style="display:none;">
+                            <label>Items to Store:</label>
+                            <ul id="storage-list"></ul>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <input type="text" id="new-item-input" placeholder="Add an item">
+                                <button type="button" id="add-item-btn" class="cta-button" style="width: auto; padding: 0.5rem;">Add</button>
+                            </div>
+                            <p class="disclaimer">Disclaimer: A quote for the price of each item's storage cost will be provided.</p>
+                        </div>
+                    </div>
+                </div>
 
-            <label for="service-select">Select a Service *</label>
-            <select id="service-select" required>
-                <option value="">-- Please choose an option --</option>
-                <option value="Care Kit">Customized Care Kit</option>
-                <option value="Local Delivery">Pickup for Local Delivery</option>
-                <option value="Urgent Care">Accompaniment to Urgent Care</option>
-                <option value="Emergency Care">Post-Surgery & Injury Check-Ins</option>
-                <option value="Move-In Help">Move-In & Move-Out Help</option>
-                <option value="Airport Pickup">Airport Pickup</option>
-                <option value="International Students">International & Out-of-State Support</option>
-            </select>
-            
-            <label for="service-notes">Additional Notes or Special Instructions</label>
-            <textarea id="service-notes" placeholder="e.g., Please include a handwritten note..."></textarea>
+                <div id="airport-pickup-fields" class="service-fields" style="display:none;">
+                     <div class="form-group">
+                        <label for="pickup-datetime">Pickup Date and Time</label>
+                        <input type="datetime-local" id="pickup-datetime" name="pickupDateTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="flight-number">Flight Number</label>
+                        <input type="text" id="flight-number" name="flightNumber" placeholder="e.g., DL1234">
+                    </div>
+                    <div class="form-group">
+                        <label for="dropoff-location">Drop-off Location</label>
+                        <input type="text" id="dropoff-location" name="dropoffLocation" placeholder="Student's dorm or apartment address">
+                    </div>
+                </div>
 
-            <button type="submit" class="cta-button">Submit Request</button>
-        </form>
-    </div>
+                <div id="international-package-fields" class="service-fields" style="display:none;">
+                    <div class="form-group">
+                         <p><strong>International & Out-of-State Support Package ($400+)</strong></p>
+                         <p>This comprehensive package includes airport pickup, dorm/apartment setup, light cleaning, and an initial shopping trip. We will contact you to coordinate all details.</p>
+                         <label for="student-arrival-info">Please provide the student's name, arrival date, and any initial questions.</label>
+                         <textarea id="student-arrival-info" name="studentArrivalInfo"></textarea>
+                    </div>
+                </div>
 
+                <button type="submit" class="cta-button">Submit Request</button>
+                <p id="form-message"></p>
+            </form>
+        </div>
+    </main>
+    
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        // IMPORTANT: Replace with your actual Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
             authDomain: "mgomom-33d39.firebaseapp.com",
             projectId: "mgomom-33d39",
-            storageBucket: "mgomom-33d39.firebasestorage.app",
+            storageBucket: "mgomom-33d39.appspot.com",
             messagingSenderId: "431667209818",
-            appId: "1:431667209818:web:44544d38e97720a4425a63",
+            appId: "1:431667209818:web:44544d3g"
         };
-
+        
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const bookingForm = document.getElementById('booking-form');
-        const authMessage = document.getElementById('auth-message');
-        const userDisplayInfo = document.getElementById('user-display-info');
+        // --- Logic for the dynamic form ---
+        const serviceSelect = document.getElementById('service-type');
+        const allFields = document.querySelectorAll('.service-fields');
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                bookingForm.style.display = 'block';
-                authMessage.style.display = 'none';
-                document.getElementById('parent-name').value = user.displayName || '';
-                document.getElementById('parent-email').value = user.email || ''; // Pre-fill email
-            } else {
-                // This is the new redirect logic
-                window.location.href = `/login.html?redirect=${window.location.pathname}`;
+        serviceSelect.addEventListener('change', (event) => {
+            const selectedService = event.target.value;
+            
+            // Hide all specific fields first
+            allFields.forEach(fieldSet => {
+                fieldSet.style.display = 'none';
+            });
+
+            // Show the relevant fields based on selection
+            if (selectedService === 'care-kit') {
+                document.getElementById('care-kit-fields').style.display = 'block';
+            } else if (selectedService === 'urgent-care' || selectedService === 'emergency-care') {
+                document.getElementById('urgent-care-fields').style.display = 'block';
+            } else if (selectedService === 'move-in') {
+                document.getElementById('move-in-fields').style.display = 'block';
+            } else if (selectedService === 'airport-pickup') {
+                document.getElementById('airport-pickup-fields').style.display = 'block';
+            } else if (selectedService === 'international-package') {
+                document.getElementById('international-package-fields').style.display = 'block';
             }
         });
+        
+        // --- Logic for Move-In storage items ---
+        const shipItemsCheckbox = document.getElementById('ship-items-checkbox');
+        const storageListContainer = document.getElementById('storage-list-container');
+        const addItemBtn = document.getElementById('add-item-btn');
+        const newItemInput = document.getElementById('new-item-input');
+        const storageList = document.getElementById('storage-list');
+        let itemsToStore = [];
 
-        bookingForm.addEventListener('submit', async (e) => {
+        shipItemsCheckbox.addEventListener('change', () => {
+            storageListContainer.style.display = shipItemsCheckbox.checked ? 'block' : 'none';
+        });
+
+        addItemBtn.addEventListener('click', () => {
+            const itemName = newItemInput.value.trim();
+            if (itemName) {
+                itemsToStore.push(itemName);
+                const li = document.createElement('li');
+                li.textContent = itemName;
+                storageList.appendChild(li);
+                newItemInput.value = ''; // Clear input
+            }
+        });
+        
+        // --- Form Submission Logic ---
+        const form = document.getElementById('booking-form');
+        const formMessage = document.getElementById('form-message');
+
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const user = auth.currentUser;
-            if (!user) return alert('You must be signed in!');
+            formMessage.textContent = 'Submitting...';
 
-            const orderData = {
-                userId: user.uid,
-                // THIS IS THE FIX: Always use the verified user email
-                userEmail: user.email, 
-                userName: document.getElementById('parent-name').value,
-                // THIS IS THE FIX: Correctly read phone and preference
-                userPhone: document.getElementById('parent-phone').value,
-                contactPreference: document.querySelector('input[name="contact-pref"]:checked').value,
-                
-                studentName: document.getElementById('student-name').value,
-                studentAddress: document.getElementById('student-address').value,
-                deliveryDate: document.getElementById('delivery-date').value,
-                service: document.getElementById('service-select').value,
-                notes: document.getElementById('service-notes').value,
-                
-                approvalStatus: "pending", 
-                progressStatus: "not-started",
-                
-                createdAt: serverTimestamp()
-            };
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Add the list of stored items if applicable
+            if (data.serviceType === 'move-in' && data.shipItems === 'on') {
+                data.storedItems = itemsToStore;
+            }
 
             try {
-                await addDoc(collection(db, "orders"), orderData);
-                alert("Success! Your request has been submitted for approval.");
-                // Redirect to the dashboard so they can see their new order
-                window.location.href = '/dashboard.html'; 
+                // Save the data to a 'bookings' collection in Firestore
+                const docRef = await addDoc(collection(db, "bookings"), data);
+                formMessage.textContent = 'Success! Your request has been submitted. We will contact you shortly.';
+                formMessage.style.color = '#4CAF50';
+                form.reset();
+                itemsToStore = []; // Reset stored items
+                storageList.innerHTML = '';
+                // Hide all specific fields again after submission
+                allFields.forEach(fieldSet => fieldSet.style.display = 'none');
             } catch (error) {
-                console.error("Error submitting request:", error);
-                alert("There was an error. Please try again.");
+                console.error("Error adding document: ", error);
+                formMessage.textContent = 'Error: Could not submit request. Please try again.';
+                formMessage.style.color = '#F44336';
             }
         });
     </script>
