@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MGoMom - FAQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; }
+        a { text-decoration: none; color: inherit; }
+
+        /* Header & Navigation */
+        .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
+        .header-logo { max-height: 48px; width: auto; }
+        .desktop-nav { display: flex; align-items: center; gap: 1rem; }
+        .desktop-nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
+        
+        /* Auth Container & CTA Button Style */
+        #auth-container { display: flex; align-items: center; gap: 1rem; }
+        .cta-button { font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; background-color: #001E3C; color: #FFCB05; }
+        #user-info a, #user-info button { padding: 0.5rem 1rem; border-radius: 5px; font-weight: 700; }
+        #user-info button { background-color: transparent; border: 2px solid #001E3C; color: #001E3C; cursor: pointer; }
+
+        /* Hamburger Icon & Mobile Nav */
+        .hamburger, .mobile-nav { display: none; }
+
+        /* Main Content */
+        main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .faq-container { background-color: #022b59; padding: 2rem; border-radius: 8px; }
+        .faq-item { margin-bottom: 1.5rem; }
+        .faq-item h3 { color: #FFCB05; margin-bottom: 0.5rem; }
+        .faq-item p { line-height: 1.6; margin: 0; }
+
+        /* Footer */
+        footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; font-size: 0.9rem; margin-top: 3rem; line-height: 1.4; }
+        footer a { color: #FFCB05; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        /* Mobile Styles */
+        @media (max-width: 900px) {
+            .desktop-nav, #auth-container { display: none; }
+            .hamburger { display: block; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
+            .mobile-nav { display: none; flex-direction: column; gap: 0.5rem; position: absolute; top: 100%; right: 0; background-color: #FFCB05; padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 100; }
+            .mobile-nav a { color: #001E3C; font-weight: 700; }
+            .mobile-nav.open { display: flex; }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <a href="index.html" class="header-logo-link"><img src="MGoMom horiz1.png" alt="MGoMom logo – click to return home" class="header-logo" /></a>
+        <nav class="desktop-nav">
+            <a href="care-kits.html">Care Kits</a>
+            <a href="deliveries.html">Local Deliveries</a>
+            <a href="urgent-care.html">Urgent Care</a>
+            <a href="post-surgery.html">Emergency Care</a>
+            <a href="move-in.html">Move-In Help</a>
+            <a href="airport-pickup.html">Airport Pickup</a>
+            <a href="international.html">International Students</a>
+            <a href="faq.html">FAQ</a>
+        </nav>
+        <div id="auth-container">
+            <a href="/login.html" id="login-button" class="cta-button">Sign In</a>
+            <div id="user-info" style="display: none;">
+                <a href="/dashboard.html" style="font-weight: bold;">My Orders</a> 
+                <button id="logout-button">Sign Out</button>
+            </div>
+        </div>
+        <button class="hamburger" aria-label="Toggle menu">☰</button>
+        <nav class="mobile-nav" id="mobile-menu">
+            <a href="care-kits.html">Care Kits</a>
+            <a href="deliveries.html">Local Deliveries</a>
+            <a href="urgent-care.html">Urgent Care</a>
+            <a href="post-surgery.html">Emergency Care</a>
+            <a href="move-in.html">Move-In Help</a>
+            <a href="airport-pickup.html">Airport Pickup</a>
+            <a href="international.html">International Students</a>
+            <a href="faq.html">FAQ</a>
+            <hr>
+            <div id="mobile-auth-container"></div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="faq-container">
+            <h1 style="text-align: center; color: #FFCB05;">Frequently Asked Questions</h1>
+            
+            <div class="faq-item">
+                <h3>How do I book a service?</h3>
+                <p>The best way to book is by filling out our <a href="/booking.html" style="color: #FFCB05; text-decoration: underline;">online booking form</a>. You can also call or text me at <a href="tel:+13138871856" style="color: #FFCB05; text-decoration: underline;">(313) 887-1856</a> for more immediate needs.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>What are your hours of operation?</h3>
+                <p>I am flexible and aim to meet your student's needs. While I primarily operate during standard business hours (8am to 6pm), I can accommodate evenings and weekends by appointment. For urgent matters, please call or text me directly at <a href="tel:+13138871856" style="color: #FFCB05; text-decoration: underline;">(313) 887-1856</a></p>
+            </div>
+
+            <div class="faq-item">
+                <h3>What payment methods do you accept?</h3>
+                <p>I primarly accept digital payments through platforms like Venmo and PayPal. Payment details will be provided and further discussed once a service is confirmed.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Is MGoMom a medical service?</h3>
+                <p>No. While I can provide transportation to urgent care and deliver over-the-counter medications, MGoMom is not a medical service. **In case of a serious medical emergency, please call 911 immediately.**</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>What is your service area?</h3>
+                <p>My services are centered around the University of Michigan in Ann Arbor. I cover the campus area and surrounding neighborhoods. If you have a request that is slightly outside this area, please contact me to see if I can accommodate it.</p>
+            </div>
+
+            <div class="faq-item">
+                <h3>Can I request a service that isn't listed on the site?</h3>
+                <p>Absolutely! The services listed are our most common requests, but I pride myself on providing personalized support. If you have a specific need, please don't hesitate to reach out and ask. I will do my best to help.</p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <section>
+            <h3>How to Order or Contact Me</h3>
+            <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: 400px;">
+                <li><strong>Book Online:</strong> <a href="/booking.html">Fill out the Request Form</a></li>
+                <li><strong>Call/Text:</strong> <a href="tel:+13138871856"><a href="tel:+13138871856" style="color: #FFCB05; text-decoration: underline;">(313) 887-1856</a></a></li>
+                <li><strong>Email:</strong> <a href="mailto:marybethmgomom@gmail.com">marybethmgomom@gmail.com</a></li>
+            </ul>
+            <p style="margin-top: 1rem;"><em>Disclaimer: MGoMom is not a medical professional. In an emergency, call 911.</em></p>
+            <p style="margin-top: 1rem;">&copy; 2025 MGoMom. All rights reserved.</p>
+        </section>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        const firebaseConfig = { apiKey: "YOUR_API_KEY", authDomain: "YOUR_AUTH_DOMAIN", projectId: "YOUR_PROJECT_ID", storageBucket: "YOUR_STORAGE_BUCKET", messagingSenderId: "YOUR_SENDER_ID", appId: "YOUR_APP_ID" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const loginButton = document.getElementById('login-button');
+        const logoutButton = document.getElementById('logout-button');
+        const userInfo = document.getElementById('user-info');
+        const mobileAuthContainer = document.getElementById('mobile-auth-container');
+        if (logoutButton) logoutButton.addEventListener('click', () => signOut(auth));
+        onAuthStateChanged(auth, (user) => {
+            if (user) { // User is LOGGED IN
+                if (loginButton) loginButton.style.display = 'none';
+                if (userInfo) userInfo.style.display = 'flex';
+                if (mobileAuthContainer) {
+                    mobileAuthContainer.innerHTML = `<div><a href="/dashboard.html">My Orders</a></div><div><a href="#" id="mobile-logout">Sign Out</a></div>`;
+                    const mobileLogout = document.getElementById('mobile-logout');
+                    if (mobileLogout) mobileLogout.addEventListener('click', () => signOut(auth));
+                }
+            } else { // User is LOGGED OUT
+                if (loginButton) loginButton.style.display = 'block';
+                if (userInfo) userInfo.style.display = 'none';
+                if (mobileAuthContainer) {
+                    mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
+                }
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileMenu = document.getElementById('mobile-menu');
+            hamburger.addEventListener('click', () => {
+                mobileMenu.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>
