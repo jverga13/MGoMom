@@ -6,84 +6,43 @@
   <title>MGoMom</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Global Styles */
+     /* Global Styles */
     body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; }
     a { text-decoration: none; color: inherit; }
 
     /* Header & Navigation */
-    .top-bar { 
-        display: flex; 
-        align-items: center; 
-        justify-content: space-between;
-        padding: 0.75rem 1rem; 
-        background-color: #FFCB05; 
-        position: relative; 
-    }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
     .header-logo { max-height: 48px; width: auto; }
     
     /* Desktop Navigation Links */
-    .desktop-nav { 
-        display: flex; 
-        align-items: center;
-        gap: 1rem; 
-    }
+    .desktop-nav { display: flex; align-items: center; gap: 1rem; }
     .desktop-nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
     
     /* Auth Container & CTA Button Style */
     #auth-container { display: flex; align-items: center; gap: 1rem; }
     .cta-button { font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; background-color: #001E3C; color: #FFCB05; }
-
-    #user-info a, #user-info button {
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    font-weight: 700;
-    }
-
-    #user-info button {
-        background-color: transparent;
-        border: 2px solid #001E3C;
-        color: #001E3C;
-        cursor: pointer;
-    }
+    #user-info a, #user-info button { padding: 0.5rem 1rem; border-radius: 5px; font-weight: 700; }
+    #user-info button { background-color: transparent; border: 2px solid #001E3C; color: #001E3C; cursor: pointer; }
 
     /* Hamburger Icon & Mobile Nav */
     .hamburger, .mobile-nav { display: none; }
 
     /* Main Content & Footer */
-    main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-    .hero { background-color: #022b59; padding: 2rem; border-radius: 8px; text-align: center; }
-    footer {
-    background-color: #00172d;
-    color: #cccccc;
-    padding: 2rem 1rem;
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 3rem;
-    line-height: 1.4;
-    }
-    footer a {
-        color: #FFCB05;
-        text-decoration: none;
-    }
-    footer a:hover {
-        text-decoration: underline;
-    }
+    main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    ul.services { list-style: none; padding: 0; margin: 1rem 0; }
+    ul.services li { background-color: #022b59; padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; transition: background-color 0.3s; }
+    ul.services li:hover { background-color: #0a3d7f; cursor: pointer; }
+    footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; margin-top: 3rem; }
+    footer a { color: #FFCB05; }
 
     /* Mobile Styles */
     @media (max-width: 900px) {
       .desktop-nav, #auth-container { display: none; }
       .hamburger { display: block; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
       .mobile-nav {
-        display: none;
-        flex-direction: column;
-        gap: 0.5rem;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background-color: #FFCB05;
-        padding: 1rem;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        z-index: 100;
+        display: none; flex-direction: column; gap: 0.5rem; position: absolute; top: 100%; right: 0;
+        background-color: #FFCB05; padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 100;
       }
       .mobile-nav a { color: #001E3C; font-weight: 700; }
       .mobile-nav.open { display: flex; }
@@ -130,12 +89,10 @@
   <main>
     <h1>Move-In & Move-Out Help <span class="price">$55/hr (2 hr min)</span></h1>
     <p>Let us make your move to campus smoother and more efficient—no hidden fees, just hands-on support.</p>
-    <ul class="requirements">
-      <li>Hourly rate: $55/hr (2-hour minimum)</li>
-      <li>We’ll unpack, unbox, and set up dorm rooms or apartments with you, making the proccess quicker, easier, and more seamless</li>
-      <li>Shipping can be arranged ahead of time—just message me with what your plan to order</li>
-      <li>Available throughout all move-in/move-out seasons (fall, winter, spring, summer) (please text to confirm arrival dates)</li>
-      <li>Will store packages and other move-in/move-out in my home if desired for (maximum: 6 months)</li>
+    <ul class="services">
+      <li class="clickable-service"><h3>Unpacking</h3><p>We’ll unpack, unbox, and set up dorm rooms or apartments with you, making the proccess quicker, easier, and seamless</p></li>
+      <li class="clickable-service"><h3>Move-In/Move-Out Availability</h3><p>Available throughout all move-in/move-out seasons (fall, winter, spring, summer) (please text to confirm arrival dates)</p></li>
+      <li class="clickable-service"><h3>Package Storage</h3><p>Will store packages and other move-in/move-out in my home until move-in time if needed (maximum: 6 months)</p></li>
     </ul>
     <p>Whether it’s delivering online‐ordered furniture or assembling your student’s new setup, I’ve got it covered.</p>
     <a href="/booking.html" class="cta-button">Book Now</a>
@@ -186,6 +143,18 @@
             mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
         }
     }
+
+    // --- This part handles the clickable service boxes ---
+    const serviceBoxes = document.querySelectorAll('.clickable-service');
+    serviceBoxes.forEach(box => {
+        box.addEventListener('click', () => {
+            if (user) {
+                window.location.href = '/booking.html';
+            } else {
+                window.location.href = '/login.html?redirect=/booking.html';
+            }
+        });
+    });
 });
   </script>
 

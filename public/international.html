@@ -6,84 +6,43 @@
   <title>MGoMom</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Global Styles */
+     /* Global Styles */
     body { font-family: 'Nunito', sans-serif; margin: 0; padding: 0; background-color: #001E3C; color: #f7f7f7; }
     a { text-decoration: none; color: inherit; }
 
     /* Header & Navigation */
-    .top-bar { 
-        display: flex; 
-        align-items: center; 
-        justify-content: space-between;
-        padding: 0.75rem 1rem; 
-        background-color: #FFCB05; 
-        position: relative; 
-    }
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background-color: #FFCB05; position: relative; }
     .header-logo { max-height: 48px; width: auto; }
     
     /* Desktop Navigation Links */
-    .desktop-nav { 
-        display: flex; 
-        align-items: center;
-        gap: 1rem; 
-    }
+    .desktop-nav { display: flex; align-items: center; gap: 1rem; }
     .desktop-nav a { padding: 0.4rem 0.6rem; font-weight: 700; color: #001E3C; border-radius: 4px; }
     
     /* Auth Container & CTA Button Style */
     #auth-container { display: flex; align-items: center; gap: 1rem; }
     .cta-button { font-weight: 700; padding: 0.5rem 1rem; border-radius: 5px; background-color: #001E3C; color: #FFCB05; }
-
-    #user-info a, #user-info button {
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    font-weight: 700;
-    }
-
-    #user-info button {
-        background-color: transparent;
-        border: 2px solid #001E3C;
-        color: #001E3C;
-        cursor: pointer;
-    }
+    #user-info a, #user-info button { padding: 0.5rem 1rem; border-radius: 5px; font-weight: 700; }
+    #user-info button { background-color: transparent; border: 2px solid #001E3C; color: #001E3C; cursor: pointer; }
 
     /* Hamburger Icon & Mobile Nav */
     .hamburger, .mobile-nav { display: none; }
 
     /* Main Content & Footer */
-    main { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-    .hero { background-color: #022b59; padding: 2rem; border-radius: 8px; text-align: center; }
-    footer {
-    background-color: #00172d;
-    color: #cccccc;
-    padding: 2rem 1rem;
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 3rem;
-    line-height: 1.4;
-    }
-    footer a {
-        color: #FFCB05;
-        text-decoration: none;
-    }
-    footer a:hover {
-        text-decoration: underline;
-    }
+    main { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    ul.services { list-style: none; padding: 0; margin: 1rem 0; }
+    ul.services li { background-color: #022b59; padding: 1rem; margin-bottom: 0.75rem; border-radius: 6px; transition: background-color 0.3s; }
+    ul.services li:hover { background-color: #0a3d7f; cursor: pointer; }
+    footer { background-color: #00172d; color: #cccccc; padding: 2rem 1rem; text-align: center; margin-top: 3rem; }
+    footer a { color: #FFCB05; }
 
     /* Mobile Styles */
     @media (max-width: 900px) {
       .desktop-nav, #auth-container { display: none; }
       .hamburger { display: block; background: none; border: none; font-size: 2rem; cursor: pointer; color: #001E3C; }
       .mobile-nav {
-        display: none;
-        flex-direction: column;
-        gap: 0.5rem;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        background-color: #FFCB05;
-        padding: 1rem;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        z-index: 100;
+        display: none; flex-direction: column; gap: 0.5rem; position: absolute; top: 100%; right: 0;
+        background-color: #FFCB05; padding: 1rem; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 100;
       }
       .mobile-nav a { color: #001E3C; font-weight: 700; }
       .mobile-nav.open { display: flex; }
@@ -131,23 +90,23 @@
     <h1>International & Out-of-State Support <span class="price">Package from $400</span></h1>
     <p>I understand the extra challenges faced by out-of-state and international students. Our hands-on, mom-style support ensures your student isn’t just dropped at campus, but truly settled, safe, and confident.</p>
     <ul class="services">
-      <li>
+      <li class="clickable-service">
         <h3>Airport Pickup & Welcome</h3>
         <p>Safe, friendly pickup from DTW with local orientation. <em>Included in package.</em></p>
       </li>
-      <li>
+      <li class="clickable-service">
         <h3>Dorm/Apartment Setup</h3>
         <p>I’ll help move in, unpack, and organize. <em>Included in package.</em></p>
       </li>
-      <li>
+      <li class="clickable-service">
         <h3>Fresh Start Cleaning</h3>
         <p>Light cleaning and disinfection before move-in. <em>Included in package.</em></p>
       </li>
-      <li>
+      <li class="clickable-service">
         <h3>Initial Shopping Trip</h3>
         <p>Essentials like bedding, snacks, toiletries. <em>Cost of items + delivery fee applies.</em></p>
       </li>
-      <li>
+      <li class="clickable-service">
         <h3>Move-Out Help (Optional)</h3>
         <p>Efficient packing and departure support at $55/hr (2 hr min).</p>
       </li>
@@ -200,6 +159,18 @@
             mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
         }
     }
+
+    // --- This part handles the clickable service boxes ---
+    const serviceBoxes = document.querySelectorAll('.clickable-service');
+    serviceBoxes.forEach(box => {
+        box.addEventListener('click', () => {
+            if (user) {
+                window.location.href = '/booking.html';
+            } else {
+                window.location.href = '/login.html?redirect=/booking.html';
+            }
+        });
+    });
 });
   </script>
 
