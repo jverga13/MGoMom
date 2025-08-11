@@ -17,13 +17,19 @@
         /* New Styles for Care Kit Options */
         .care-kit-options { margin-top: 1rem; border: 1px solid #0a3d7f; border-radius: 5px; padding: 1rem; }
         .care-kit-options legend { font-size: 1.25rem; /* Makes the title bigger */ }
-        .kit-radio-group label { 
-            font-weight: normal; 
-            margin-right: 1.5rem; 
-            display: inline-flex; /* Helps with alignment */
-            align-items: center;  /* Aligns radio button with text */
-            gap: 0.5rem;          /* Adds a small space between button and word */
+        .kit-radio-group {
+            display: flex;
+            flex-direction: column; /* Stack options vertically */
+            gap: 0.5rem;            /* Space between each option */
         }
+
+        .kit-radio-group label {
+            display: inline-flex;
+            align-items: center;    /* Align bubble with text */
+            gap: 0.5rem;
+            font-weight: normal;
+        }
+
 
         .kit-radio-group input[type="radio"] {
             margin: 0; /* Removes any default margin from the radio button */
@@ -62,14 +68,20 @@
                 <div class="care-kit-options">
                     <legend>Choose a Care Kit *</legend>
                     <div class="kit-radio-group">
-                        <input type="radio" id="kit-exam" name="kit-type" value="Exam Stress Relief Kit" required>
-                        <label for="kit-exam">Exam Stress Relief</label>
+                        <label for="kit-exam">
+                            <input type="radio" id="kit-exam" name="kit-type" value="Exam Stress Relief Kit" required>
+                            Exam Stress Relief
+                        </label>
 
-                        <input type="radio" id="kit-birthday" name="kit-type" value="Birthday or Holiday Box">
-                        <label for="kit-birthday">Birthday/Holiday</label>
-                        
-                        <input type="radio" id="kit-sick" name="kit-type" value="Sick Day Essentials">
-                        <label for="kit-sick">Sick Day</label>
+                        <label for="kit-birthday">
+                            <input type="radio" id="kit-birthday" name="kit-type" value="Birthday or Holiday Box">
+                            Birthday/Holiday
+                        </label>
+
+                        <label for="kit-sick">
+                            <input type="radio" id="kit-sick" name="kit-type" value="Sick Day Essentials">
+                            Sick Day
+                        </label>
                     </div>
                     <div id="kit-ingredients">
                         <p>Please select a kit to see what's inside.</p>
