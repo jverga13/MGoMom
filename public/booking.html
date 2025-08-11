@@ -16,9 +16,16 @@
         
         /* New Styles for Care Kit Options */
         .care-kit-options { margin-top: 1rem; border: 1px solid #0a3d7f; border-radius: 5px; padding: 1rem; }
-        .kit-radio-group label { font-weight: normal; margin-right: 1.5rem; }
-        #kit-ingredients { background-color: #00172d; padding: 1rem; margin-top: 1rem; border-radius: 5px; min-height: 50px; }
-        #kit-ingredients h4 { color: #FFCB05; margin-top: 0; }
+        .care-kit-options legend { font-size: 1.25rem; /* Makes the title bigger */ }
+        .kit-radio-group label { 
+            font-weight: normal; 
+            margin-right: 1.5rem; 
+            display: inline-flex; /* Helps with alignment */
+            align-items: center;  /* Aligns radio button with text */
+            gap: 0.3rem;          /* Adds a small space between button and word */
+        }
+#kit-ingredients { background-color: #00172d; padding: 1rem; margin-top: 1rem; border-radius: 5px; min-height: 50px; }
+#kit-ingredients h4 { color: #FFCB05; margin-top: 0; }
     </style>
 </head>
 <body>
