@@ -6,11 +6,10 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "redirects": [
+    "rewrites": [
       {
-        "source": "/private/**",
-        "destination": "/index.html",
-        "type": 302
+        "source": "/admin",
+        "function": "adminPage"
       }
     ]
   },

@@ -1,54 +1,44 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const nodemailer = require("nodemailer");
+const fs = require("fs"); // File System module to read the HTML file
 
 admin.initializeApp();
 
-// Configure the email transport using a service like Gmail
-// NOTE: You must generate a Google App Password for this to work.
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: functions.config().gmail.email, // your gmail address
-    pass: functions.config().gmail.password, // your app password
-  },
+// --- This is your new, secure function for the admin page ---
+exports.adminPage = functions.https.onRequest(async (req, res) => {
+    // IMPORTANT: Replace with your mom's actual User ID
+    const ADMIN_UID = "REPLACE_WITH_YOUR_MOMS_USER_ID";
+
+    const sessionCookie = req.cookies.session || "";
+
+    try {
+        // Verify the user is logged in
+        const decodedClaims = await admin.auth().verifySessionCookie(sessionCookie, true);
+        
+        // Check if the logged-in user is the admin
+        if (decodedClaims.uid === ADMIN_UID) {
+            // If they are the admin, read and serve the admin.html file
+            const adminHtml = fs.readFileSync("./admin.html").toString();
+            res.status(200).send(adminHtml);
+        } else {
+            // If they are a regular user, redirect to the homepage
+            res.redirect("/");
+        }
+    } catch (error) {
+        // If they are not logged in, or the cookie is invalid, redirect to the homepage
+        res.redirect("/");
+    }
 });
 
-// This is the Cloud Function that will be triggered
-exports.onOrderAccepted = functions.firestore
-  .document("orders/{orderId}")
-  .onUpdate(async (change, context) => {
-    // Get the data from the document change
-    const orderDataAfter = change.after.data();
-    const orderDataBefore = change.before.data();
 
-    // Check if the status was changed from something else to "accepted"
-    if (
-      orderDataBefore.status !== "accepted" &&
-      orderDataAfter.status === "accepted"
-    ) {
-      const userEmail = orderDataAfter.userEmail;
-      const userName = orderDataAfter.userName;
+// --- This is your existing function for sending booking emails ---
+// Make sure to set up Brevo as we discussed
+const brevo = require("@getbrevo/brevo");
+const apiInstance = new brevo.TransactionalEmailsApi();
+apiInstance.authentications["apiKey"].apiKey = functions.config().brevo.key;
 
-      const mailOptions = {
-        from: "MGoMom <your.email@gmail.com>", // Use your email
-        to: userEmail,
-        subject: "Your MGoMom Order has been Accepted!",
-        html: `
-          <p>Hi ${userName},</p>
-          <p>This is a confirmation that your recent MGoMom order for the service "${orderDataAfter.service}" has been accepted and is now in progress.</p>
-          <p>We'll be in touch soon!</p>
-          <p>Best,</p>
-          <p>The MGoMom Team</p>
-        `,
-      };
-
-      try {
-        await transporter.sendMail(mailOptions);
-        console.log("Acceptance email sent successfully to:", userEmail);
-      } catch (error) {
-        console.error("Error sending email:", error);
-      }
-    }
-    return null; // Function must return a value or a promise
-  });
+exports.sendBookingEmail = functions.firestore
+    .document('bookings/{bookingId}')
+    .onCreate(async (snap, context) => {
+        // Your Brevo email sending logic goes here...
+    });
