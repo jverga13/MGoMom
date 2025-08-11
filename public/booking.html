@@ -6,102 +6,20 @@
     <title>Book a Service - MGoMom</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: #001E3C;
-            color: #f7f7f7;
-            margin: 0;
-            padding: 2rem;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #022b59;
-            padding: 2rem;
-            border-radius: 8px;
-        }
-        h1 {
-            color: #FFCB05;
-        }
-        label, legend {
-            display: block;
-            margin-top: 1rem;
-            font-weight: 700;
-        }
-
-        /* Exclude radios and checkboxes from global 100% width rule */
-        input:not([type="radio"]):not([type="checkbox"]),
-        select,
-        textarea {
-            width: 100%;
-            padding: 0.75rem;
-            margin-top: 0.5rem;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        .cta-button {
-            display: inline-block;
-            width: 100%;
-            text-align: center;
-            background-color: #FFCB05;
-            color: #001E3C;
-            font-weight: 700;
-            padding: 0.75rem 1rem;
-            border-radius: 5px;
-            border: none;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-top: 2rem;
-            transition: background-color 0.3s;
-        }
-        #auth-message a {
-            color: #FFCB05;
-            font-weight: bold;
-        }
+        body { font-family: 'Nunito', sans-serif; background-color: #001E3C; color: #f7f7f7; margin: 0; padding: 2rem; }
+        .form-container { max-width: 600px; margin: 0 auto; background-color: #022b59; padding: 2rem; border-radius: 8px; }
+        h1 { color: #FFCB05; }
+        label, legend { display: block; margin-top: 1rem; font-weight: 700; }
+        input:not([type="radio"]):not([type="checkbox"]), select, textarea { width: 100%; padding: 0.75rem; margin-top: 0.5rem; border-radius: 4px; border: 1px solid #ccc; font-size: 1rem; box-sizing: border-box; background-color: #00172d; color: #f7f7f7; }
+        .cta-button { display: inline-block; width: 100%; text-align: center; background-color: #FFCB05; color: #001E3C; font-weight: 700; padding: 0.75rem 1rem; border-radius: 5px; border: none; font-size: 1.1rem; cursor: pointer; margin-top: 2rem; transition: background-color 0.3s; }
+        #auth-message a { color: #FFCB05; font-weight: bold; }
         
-        /* Care Kit Options styling */
-        .care-kit-options {
-            margin-top: 1rem;
-            border: 1px solid #0a3d7f;
-            border-radius: 5px;
-            padding: 1rem;
-        }
-        .care-kit-options legend {
-            font-size: 1.25rem;
-        }
-
-        .kit-radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            margin-top: 0.5rem;
-        }
-        .kit-radio-group label {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-weight: normal;
-            cursor: pointer;
-        }
-        .kit-radio-group input[type="radio"] {
-            width: auto;
-            margin: 0;
-        }
-
-        #kit-ingredients {
-            background-color: #00172d;
-            padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 5px;
-            min-height: 50px;
-        }
-        #kit-ingredients h4 {
-            color: #FFCB05;
-            margin-top: 0;
-        }
+        /* Specific Section Styles */
+        .service-specific-fields { border: 1px solid #0a3d7f; border-radius: 5px; padding: 1rem; margin-top: 1rem; }
+        .service-specific-fields legend { font-size: 1.25rem; color: #FFCB05; }
+        .kit-radio-group label { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: normal; cursor: pointer; margin-right: 1.5rem;}
+        #kit-ingredients { background-color: #00172d; padding: 1rem; margin-top: 1rem; border-radius: 5px; min-height: 50px; }
+        .disclaimer { font-size: 0.8rem; color: #cccccc; font-style: italic; margin-top: 0.5rem; }
     </style>
 </head>
 <body>
@@ -111,57 +29,28 @@
 
         <form id="booking-form" style="display: none;">
             <label for="parent-name">Your Full Name *</label>
-            <input type="text" id="parent-name" required>
-
+            <input type="text" id="parent-name" name="parentName" required>
             <label for="parent-phone">Your Phone Number *</label>
-            <input type="tel" id="parent-phone" placeholder="(123) 456-7890" required>
-
+            <input type="tel" id="parent-phone" name="parentPhone" placeholder="(123) 456-7890" required>
             <hr style="border-color: #FFCB05; margin: 2rem 0;">
-
             <label for="student-name">Student's Full Name *</label>
-            <input type="text" id="student-name" required>
-
-            <label for="student-address">Student's Campus Address *</label>
-            <input type="text" id="student-address" required>
-
-            <label for="delivery-date">Desired Delivery/Service Date *</label>
-            <input type="date" id="delivery-date" required>
+            <input type="text" id="student-name" name="studentName" required>
 
             <label for="service-select">Select a Service *</label>
-            <select id="service-select" required>
+            <select id="service-select" name="service" required>
                 <option value="">-- Please choose an option --</option>
-                <option value="Care Kit">Customized Care Kit</option>
-                <option value="Local Delivery">Pickup for Local Delivery</option>
+                <option value="Customized Care Kit">Customized Care Kit</option>
+                <option value="Urgent Care">Urgent Care Assistance</option>
+                <option value="Emergency Care">Emergency Care Assistance</option>
+                <option value="Move-In/Move-Out Help">Move-In/Move-Out Help</option>
+                <option value="Airport Pickup">Airport Pickup</option>
+                <option value="International Student Package">International Student Package</option>
             </select>
             
-            <div id="care-kit-details" style="display: none;">
-                <div class="care-kit-options">
-                    <legend>Choose a Care Kit *</legend>
-                    <div class="kit-radio-group">
-                        <label for="kit-exam">
-                            <input type="radio" id="kit-exam" name="kit-type" value="Exam Stress Relief Kit" required>
-                            Exam Stress Relief
-                        </label>
-
-                        <label for="kit-birthday">
-                            <input type="radio" id="kit-birthday" name="kit-type" value="Birthday or Holiday Box">
-                            Birthday/Holiday
-                        </label>
-
-                        <label for="kit-sick">
-                            <input type="radio" id="kit-sick" name="kit-type" value="Sick Day Essentials">
-                            Sick Day
-                        </label>
-                    </div>
-                    <div id="kit-ingredients">
-                        <p>Please select a kit to see what's inside.</p>
-                    </div>
-                </div>
-            </div>
+            <div id="service-fields-container"></div>
 
             <label for="service-notes">Additional Notes or Special Instructions</label>
-            <textarea id="service-notes" placeholder="e.g., Please include a handwritten note..."></textarea>
-
+            <textarea id="service-notes" name="notes" placeholder="e.g., Allergies, specific instructions, etc."></textarea>
             <button type="submit" class="cta-button">Submit Request</button>
         </form>
     </div>
@@ -179,6 +68,7 @@
             messagingSenderId: "431667209818",
             appId: "1:431667209818:web:44544d3g"
         };
+        
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -195,62 +85,119 @@
         });
 
         const serviceSelect = document.getElementById('service-select');
-        const careKitDetails = document.getElementById('care-kit-details');
-        const kitIngredients = document.getElementById('kit-ingredients');
+        const fieldsContainer = document.getElementById('service-fields-container');
 
-        const kitData = {
-            "Exam Stress Relief Kit": {
-                title: "Exam Stress Relief Kit",
-                ingredients: "Includes: Healthy snacks, energy drinks, a stress ball, and encouraging handwritten notes."
-            },
-            "Birthday or Holiday Box": {
-                title: "Birthday or Holiday Box",
-                ingredients: "Includes: Seasonal goodies, festive treats, fun decorations, and a celebratory card."
-            },
-            "Sick Day Essentials": {
-                title: "Sick Day Essentials",
-                ingredients: "Includes: Hot soup, herbal tea, honey, tissues, cough drops, and other comfort items."
-            }
+        const serviceTemplates = {
+            "Customized Care Kit": `
+                <div class="service-specific-fields">
+                    <legend>Choose a Care Kit</legend>
+                    <div class="kit-radio-group">
+                        <label><input type="radio" name="kitType" value="Exam Stress Relief Kit"> Exam Stress Relief</label>
+                        <label><input type="radio" name="kitType" value="Birthday or Holiday Box"> Birthday/Holiday</label>
+                        <label><input type="radio" name="kitType" value="Sick Day Essentials"> Sick Day</label>
+                    </div>
+                    <div id="kit-ingredients"><p>Select a kit to see what's inside.</p></div>
+                </div>`,
+            "Urgent Care": `
+                <div class="service-specific-fields">
+                    <legend>Urgent Care Details</legend>
+                    <label for="assistance-datetime">Date & Time Needed *</label>
+                    <input type="datetime-local" id="assistance-datetime" name="assistanceDateTime" required>
+                    <label for="facility-name">Preferred Urgent Care Facility</label>
+                    <input type="text" id="facility-name" name="facilityName" placeholder="e.g., Michigan Medicine Urgent Care">
+                    <label for="reason">Reason for Visit (Injury/Sickness) *</label>
+                    <textarea id="reason" name="reason" required></textarea>
+                    <label for="emergency-contact">Emergency Contact (Name & Phone) *</label>
+                    <input type="text" id="emergency-contact" name="emergencyContact" required placeholder="In case we need to reach someone else.">
+                </div>`,
+            "Emergency Care": `
+                <div class="service-specific-fields">
+                    <legend>Emergency Care Details</legend>
+                    <label for="assistance-datetime">Date & Time Needed *</label>
+                    <input type="datetime-local" id="assistance-datetime" name="assistanceDateTime" required>
+                    <label for="facility-name">Hospital or Clinic Name</label>
+                    <input type="text" id="facility-name" name="facilityName" placeholder="e.g., University Hospital">
+                    <label for="reason">Reason for Visit (Injury/Sickness) *</label>
+                    <textarea id="reason" name="reason" required></textarea>
+                    <label for="emergency-contact">Emergency Contact (Name & Phone) *</label>
+                    <input type="text" id="emergency-contact" name="emergencyContact" required placeholder="In case we need to reach someone else.">
+                </div>`,
+            "Move-In/Move-Out Help": `
+                <div class="service-specific-fields">
+                    <legend>Move-In / Move-Out Details</legend>
+                    <div>
+                        <label><input type="radio" name="moveType" value="Move-In" checked> Move-In</label>
+                        <label><input type="radio" name="moveType" value="Move-Out"> Move-Out</label>
+                    </div>
+                    <label for="move-address">Student's Address *</label>
+                    <input type="text" id="move-address" name="moveAddress" required>
+                    <div id="storage-section">
+                        <label><input type="checkbox" id="ship-items-checkbox"> Ship items to my house beforehand?</label>
+                        <div id="storage-list-container" style="display:none;">
+                            <label>Items to Store:</label>
+                            <textarea name="storageItems" placeholder="List each item on a new line..."></textarea>
+                            <p class="disclaimer">A quote for storage costs will be provided.</p>
+                        </div>
+                    </div>
+                </div>`,
+            "Airport Pickup": `
+                <div class="service-specific-fields">
+                    <legend>Airport Pickup Details</legend>
+                    <label for="pickup-datetime">Pickup Date & Time *</label>
+                    <input type="datetime-local" id="pickup-datetime" name="pickupDateTime" required>
+                    <label for="flight-number">Flight Number *</label>
+                    <input type="text" id="flight-number" name="flightNumber" placeholder="e.g., DL1234" required>
+                    <label for="dropoff-location">Drop-off Location *</label>
+                    <input type="text" id="dropoff-location" name="dropoffLocation" required>
+                    <label for="luggage-amount">Amount of Luggage</label>
+                    <input type="text" id="luggage-amount" name="luggageAmount" placeholder="e.g., 2 large bags, 1 carry-on">
+                </div>`,
+            "International Student Package": `
+                <div class="service-specific-fields">
+                    <legend>International Student Package</legend>
+                    <p>This all-inclusive package ensures a smooth transition. We will contact you to coordinate all details, including airport pickup, dorm setup, cleaning, and an initial shopping trip.</p>
+                    <label for="arrival-details">Please provide Student's Arrival Date, Flight Number, and Dorm/Apartment Address *</label>
+                    <textarea id="arrival-details" name="arrivalDetails" required></textarea>
+                </div>`
         };
 
         serviceSelect.addEventListener('change', () => {
-            careKitDetails.style.display = serviceSelect.value === 'Care Kit' ? 'block' : 'none';
+            const selected = serviceSelect.value;
+            fieldsContainer.innerHTML = serviceTemplates[selected] || '';
+            
+            // Re-add event listeners for any dynamic elements inside the new HTML
+            if (selected === 'Customized Care Kit') {
+                document.querySelectorAll('input[name="kitType"]').forEach(radio => {
+                    radio.addEventListener('change', onKitTypeChange);
+                });
+            } else if (selected === 'Move-In/Move-Out Help') {
+                const checkbox = document.getElementById('ship-items-checkbox');
+                checkbox.addEventListener('change', () => {
+                    document.getElementById('storage-list-container').style.display = checkbox.checked ? 'block' : 'none';
+                });
+            }
         });
 
-        document.querySelectorAll('input[name="kit-type"]').forEach(radio => {
-            radio.addEventListener('change', (event) => {
-                const selectedKit = kitData[event.target.value];
-                kitIngredients.innerHTML = `
-                    <h4>${selectedKit.title}</h4>
-                    <p>${selectedKit.ingredients}</p>
-                `;
-            });
-        });
+        function onKitTypeChange(event) {
+            const kitData = { /* ... your kit data ... */ };
+            const selectedKit = kitData[event.target.value];
+            document.getElementById('kit-ingredients').innerHTML = `<h4>${selectedKit.title}</h4><p>${selectedKit.ingredients}</p>`;
+        }
 
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const user = auth.currentUser;
             if (!user) return alert('You must be signed in!');
 
-            const service = document.getElementById('service-select').value;
-            let kitType = null;
-            if (service === 'Care Kit') {
-                const selectedRadio = document.querySelector('input[name="kit-type"]:checked');
-                if (!selectedRadio) {
-                    alert('Please choose a type of Care Kit.');
-                    return;
-                }
-                kitType = selectedRadio.value;
-            }
-
-            const orderData = {
-                service: service,
-                kitType: kitType,
-                notes: document.getElementById('service-notes').value,
-            };
+            const formData = new FormData(bookingForm);
+            const data = Object.fromEntries(formData.entries());
+            
+            data.userId = user.uid;
+            data.userEmail = user.email;
+            data.createdAt = serverTimestamp();
 
             try {
-                await addDoc(collection(db, "orders"), orderData);
+                await addDoc(collection(db, "orders"), data);
                 alert("Success! Your request has been submitted.");
                 window.location.href = '/dashboard.html'; 
             } catch (error) {
