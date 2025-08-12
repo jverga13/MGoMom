@@ -179,9 +179,24 @@
         });
 
         function onKitTypeChange(event) {
-            const kitData = { /* ... your kit data ... */ };
+            const kitData = {
+                "Exam Stress Relief Kit": {
+                    title: "Exam Stress Relief Kit",
+                    ingredients: "Includes: Healthy snacks, energy drinks, a stress ball, and encouraging handwritten notes."
+                },
+                "Birthday or Holiday Box": {
+                    title: "Birthday or Holiday Box",
+                    ingredients: "Includes: Seasonal goodies, festive treats, fun decorations, and a celebratory card."
+                },
+                "Sick Day Essentials": {
+                    title: "Sick Day Essentials",
+                    ingredients: "Includes: Hot soup, herbal tea, honey, tissues, cough drops, and other comfort items."
+                }
+            };
             const selectedKit = kitData[event.target.value];
-            document.getElementById('kit-ingredients').innerHTML = `<h4>${selectedKit.title}</h4><p>${selectedKit.ingredients}</p>`;
+            if (selectedKit) {
+                document.getElementById('kit-ingredients').innerHTML = `<h4>${selectedKit.title}</h4><p>${selectedKit.ingredients}</p>`;
+            }
         }
 
         bookingForm.addEventListener('submit', async (e) => {
