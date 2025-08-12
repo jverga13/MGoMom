@@ -20,6 +20,11 @@
         .kit-radio-group label { display: inline-flex; align-items: center; gap: 0.4rem; font-weight: normal; cursor: pointer; margin-right: 1.5rem;}
         #kit-ingredients { background-color: #00172d; padding: 1rem; margin-top: 1rem; border-radius: 5px; min-height: 50px; }
         .disclaimer { font-size: 0.8rem; color: #cccccc; font-style: italic; margin-top: 0.5rem; }
+        /* --- Style to make the date picker icon white --- */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
