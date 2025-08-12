@@ -44,7 +44,6 @@
                 <option value="">-- Please choose an option --</option>
                 <option value="Customized Care Kit">Customized Care Kit</option>
                 <option value="Urgent Care">Urgent Care Assistance</option>
-                <option value="Emergency Care">Emergency Care Assistance</option>
                 <option value="Move-In/Move-Out Help">Move-In/Move-Out Help</option>
                 <option value="Airport Pickup">Airport Pickup</option>
                 <option value="International Student Package">International Student Package</option>
@@ -108,18 +107,6 @@
                     <input type="datetime-local" id="assistance-datetime" name="assistanceDateTime" required>
                     <label for="facility-name">Preferred Urgent Care Facility</label>
                     <input type="text" id="facility-name" name="facilityName" placeholder="e.g., Michigan Medicine Urgent Care">
-                    <label for="reason">Reason for Visit (Injury/Sickness) *</label>
-                    <textarea id="reason" name="reason" required></textarea>
-                    <label for="emergency-contact">Emergency Contact (Name & Phone) *</label>
-                    <input type="text" id="emergency-contact" name="emergencyContact" required placeholder="In case we need to reach someone else.">
-                </div>`,
-            "Emergency Care": `
-                <div class="service-specific-fields">
-                    <legend>Emergency Care Details</legend>
-                    <label for="assistance-datetime">Date & Time Needed *</label>
-                    <input type="datetime-local" id="assistance-datetime" name="assistanceDateTime" required>
-                    <label for="facility-name">Hospital or Clinic Name</label>
-                    <input type="text" id="facility-name" name="facilityName" placeholder="e.g., University Hospital">
                     <label for="reason">Reason for Visit (Injury/Sickness) *</label>
                     <textarea id="reason" name="reason" required></textarea>
                     <label for="emergency-contact">Emergency Contact (Name & Phone) *</label>
