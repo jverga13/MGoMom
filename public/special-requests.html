@@ -107,7 +107,66 @@
     </main>
     
     <footer>
-        <!-- Your standard footer content here -->
-    </footer>
+    <section>
+      <h3>How to Order or Contact Me</h3>
+      <ul style="list-style: none; padding: 0; margin: 0 auto; max-width: 400px;">
+        <li><strong>Book Online:</strong> <a href="/booking.html">Fill out the Request Form</a></li>
+        <li><strong>Call/Text:</strong> <a href="tel:+13138871856">+1 (313) 887-1856</a></li>
+        <li><strong>Email:</strong> <a href="mailto:marybethmgomom@gmail.com">marybethmgomom@gmail.com</a></li>
+      </ul>
+      <p style="margin-top: 1rem;"><em>Disclaimer: MGoMom is not a medical professional. In an emergency, call 911.</em></p>
+      <p style="margin-top: 1rem;">&copy; 2025 MGoMom. All rights reserved.</p>
+    </section>
+</footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    const firebaseConfig = { apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk", authDomain: "mgomom-33d39.firebaseapp.com", projectId: "mgomom-33d39", storageBucket: "mgomom-33d39.firebasestorage.app", messagingSenderId: "431667209818", appId: "1:431667209818:web:44544d38e97720a4425a63" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const loginButton = document.getElementById('login-button');
+    const logoutButton = document.getElementById('logout-button');
+    const userInfo = document.getElementById('user-info');
+    const mobileAuthContainer = document.getElementById('mobile-auth-container');
+    if (logoutButton) logoutButton.addEventListener('click', () => signOut(auth));
+    
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            if (loginButton) loginButton.style.display = 'none';
+            if (userInfo) userInfo.style.display = 'flex';
+            if (mobileAuthContainer) {
+                mobileAuthContainer.innerHTML = `<div><a href="/dashboard.html">My Orders</a></div><div><a href="#" id="mobile-logout">Sign Out</a></div>`;
+                const mobileLogout = document.getElementById('mobile-logout');
+                if (mobileLogout) mobileLogout.addEventListener('click', () => signOut(auth));
+            }
+        } else {
+            if (loginButton) loginButton.style.display = 'block';
+            if (userInfo) userInfo.style.display = 'none';
+            if (mobileAuthContainer) mobileAuthContainer.innerHTML = `<div><a href="/login.html">Sign In</a></div>`;
+        }
+        
+        const serviceBoxes = document.querySelectorAll('.clickable-service');
+        serviceBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                if (user) {
+                    window.location.href = '/booking.html';
+                } else {
+                    window.location.href = '/login.html?redirect=/booking.html';
+                }
+            });
+        });
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.querySelector('.hamburger');
+      const mobileMenu = document.getElementById('mobile-menu');
+      hamburger.addEventListener('click', () => {
+        mobileMenu.classList.toggle('open');
+      });
+    });
+  </script>
 </body>
 </html>
