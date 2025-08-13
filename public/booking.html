@@ -37,6 +37,8 @@
             <input type="text" id="parent-name" name="parentName" required>
             <label for="parent-phone">Your Phone Number *</label>
             <input type="tel" id="parent-phone" name="parentPhone" placeholder="(123) 456-7890" required>
+            <label for="parent-email">Your Email *</label>
+            <input type="email" id="parent-email" name="parentEmail" placeholder="your.email@example.com" required>
             <hr style="border-color: #FFCB05; margin: 2rem 0;">
             <label for="student-name">Student's Full Name *</label>
             <input type="text" id="student-name" name="studentName" required>
@@ -64,178 +66,184 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
-            authDomain: "mgomom-33d39.firebaseapp.com",
-            projectId: "mgomom-33d39",
-            storageBucket: "mgomom-33d39.appspot.com",
-            messagingSenderId: "431667209818",
-            appId: "1:431667209818:web:44544d3g"
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    const firebaseConfig = {
+        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+        authDomain: "mgomom-33d39.firebaseapp.com",
+        projectId: "mgomom-33d39",
+        storageBucket: "mgomom-33d39.appspot.com",
+        messagingSenderId: "431667209818",
+        appId: "1:431667209818:web:44544d3g"
+    };
 
-        const bookingForm = document.getElementById('booking-form');
-        const authMessage = document.getElementById('auth-message');
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                bookingForm.style.display = 'block';
-                authMessage.style.display = 'none';
-            } else {
-                window.location.href = `/login.html?redirect=${window.location.pathname}`;
-            }
-        });
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        const serviceSelect = document.getElementById('service-select');
-        const fieldsContainer = document.getElementById('service-fields-container');
+    const bookingForm = document.getElementById('booking-form');
+    const authMessage = document.getElementById('auth-message');
+    const parentNameInput = document.getElementById('parent-name');
+    const parentEmailInput = document.getElementById('parent-email');
+    const parentPhoneInput = document.getElementById('parent-phone');
 
-        const serviceTemplates = {
-            "Customized Care Kit": `
-                <div class="service-specific-fields">
-                    <legend>Choose a Care Kit</legend>
-                    <div class="kit-radio-group">
-                        <label><input type="radio" name="kitType" value="Exam Stress Relief Kit"> Exam Stress Relief</label>
-                        <label><input type="radio" name="kitType" value="Birthday or Holiday Box"> Birthday/Holiday</label>
-                        <label><input type="radio" name="kitType" value="Sick Day Essentials"> Sick Day</label>
-                    </div>
-                    <div id="kit-ingredients"><p>Select a kit to see what's inside.</p></div>
-                    <label for="delivery-date">Desired Delivery Date *</label>
-                    <input type="date" id="delivery-date" name="deliveryDate" required>
-                </div>`,
-            "Urgent Care": `
-                <div class="service-specific-fields">
-                    <legend>Urgent Care Details</legend>
-                    <label for="assistance-datetime">Date & Time Needed *</label>
-                    <input type="datetime-local" id="assistance-datetime" name="assistanceDateTime" required>
-                    <label for="facility-name">Preferred Urgent Care Facility</label>
-                    <input type="text" id="facility-name" name="facilityName" placeholder="e.g., Michigan Medicine Urgent Care">
-                    <label for="reason">Reason for Visit (Injury/Sickness) *</label>
-                    <textarea id="reason" name="reason" required></textarea>
-                    <label for="emergency-contact">Emergency Contact (Name & Phone) *</label>
-                    <input type="text" id="emergency-contact" name="emergencyContact" required placeholder="In case I need to reach someone else.">
-                </div>`,
-            "Move-In/Move-Out Help": `
-                <div class="service-specific-fields">
-                    <legend>Move-In / Move-Out Details</legend>
-                    <div>
-                        <label><input type="radio" name="moveType" value="Move-In" checked> Move-In</label>
-                        <label><input type="radio" name="moveType" value="Move-Out"> Move-Out</label>
-                    </div>
-                    <label for="Service-date">Move Date *</label>
-                    <input type="date" id="Service-date" name="ServiceDate" required>
-                    <label for="move-address">Student's Address *</label>
-                    <input type="text" id="move-address" name="moveAddress" required>
-                    <div id="storage-section">
-                        <label><input type="checkbox" id="ship-items-checkbox"> Ship items to my house beforehand?</label>
-                        <div id="storage-list-container" style="display:none;">
-                            <label>Items to Store:</label>
-                            <textarea name="storageItems" placeholder="List each item on a new line..."></textarea>
-                            <p class="disclaimer">Shipping is a flat rate of $200 per apartment (maximum 6 months holding time). Large items will incur an extra charge at the discretion of MGoMom, which will be brought up before purchase.</p>
-                        </div>
-                    </div>
-                </div>`,
-            "Airport Pickup": `
-                <div class="service-specific-fields">
-                    <legend>Airport Pickup Details</legend>
-                    <label for="pickup-datetime">Pickup Date & Time *</label>
-                    <input type="datetime-local" id="pickup-datetime" name="pickupDateTime" required>
-                    <label for="flight-number">Flight Number *</label>
-                    <input type="text" id="flight-number" name="flightNumber" placeholder="e.g., DL1234" required>
-                    <label for="dropoff-location">Drop-off Location *</label>
-                    <input type="text" id="dropoff-location" name="dropoffLocation" required>
-                    <label for="luggage-amount">Amount of Luggage</label>
-                    <input type="text" id="luggage-amount" name="luggageAmount" placeholder="e.g., 2 large bags, 1 carry-on">
-                </div>`,
-            "Out-of-State Student Package": `
-                <div class="service-specific-fields">
-                    <legend>Out-of-State Student Package</legend>
-                    <label for="pickup-datetime">Pickup Date & Time *</label>
-                    <input type="datetime-local" id="pickup-datetime" name="pickupDateTime" required>
-                    <label for="flight-number">Flight Number *</label>
-                    <input type="text" id="flight-number" name="flightNumber" placeholder="e.g., DL1234" required>
-                    <label for="dropoff-location">Drop-off Location *</label>
-                    <input type="text" id="dropoff-location" name="dropoffLocation" required>
-                    <label for="luggage-amount">Amount of Luggage</label>
-                    <input type="text" id="luggage-amount" name="luggageAmount" placeholder="e.g., 2 large bags, 1 carry-on">
-                    <label for="Service-date">Move Date *</label>
-                    <input type="date" id="Service-date" name="ServiceDate" required>
-                    <label for="move-address">Student's Address *</label>
-                    <input type="text" id="move-address" name="moveAddress" required>
-                </div>`,
-            "Special Request": `
-                <div class="service-specific-fields">
-                    <legend>Special Request Details</legend>
-                    <p>Please describe your request in as much detail as possible. We will review it and provide a quote.</p>
-                    <label for="request-details">Your Request *</label>
-                    <textarea id="request-details" name="requestDetails" required></textarea>
-                </div>`
-        };
+    onAuthStateChanged(auth, (user) => {
+        bookingForm.style.display = 'block'; // Always show the form
 
-        serviceSelect.addEventListener('change', () => {
-            const selected = serviceSelect.value;
-            fieldsContainer.innerHTML = serviceTemplates[selected] || '';
-            
-            // Re-add event listeners for any dynamic elements inside the new HTML
-            if (selected === 'Customized Care Kit') {
-                document.querySelectorAll('input[name="kitType"]').forEach(radio => {
-                    radio.addEventListener('change', onKitTypeChange);
-                });
-            } else if (selected === 'Move-In/Move-Out Help') {
-                const checkbox = document.getElementById('ship-items-checkbox');
-                checkbox.addEventListener('change', () => {
-                    document.getElementById('storage-list-container').style.display = checkbox.checked ? 'block' : 'none';
-                });
-            }
-        });
+        if (user) {
+            // User is logged in
+            authMessage.innerHTML = `<p>Welcome, ${user.displayName || user.email}! You are booking as a registered user. <a href="#" id="logout-link">Log out?</a></p>`;
+            document.getElementById('logout-link').addEventListener('click', () => auth.signOut());
 
-        function onKitTypeChange(event) {
-            const kitData = {
-                "Exam Stress Relief Kit": {
-                    title: "Exam Stress Relief Kit",
-                    ingredients: "Includes: Healthy snacks, energy drinks, a stress ball, and encouraging handwritten notes."
-                },
-                "Birthday or Holiday Box": {
-                    title: "Birthday or Holiday Box",
-                    ingredients: "Includes: Seasonal goodies, festive treats, fun decorations, and a celebratory card."
-                },
-                "Sick Day Essentials": {
-                    title: "Sick Day Essentials",
-                    ingredients: "Includes: Hot soup, herbal tea, honey, tissues, cough drops, and other comfort items."
-                }
-            };
-            const selectedKit = kitData[event.target.value];
-            if (selectedKit) {
-                document.getElementById('kit-ingredients').innerHTML = `<h4>${selectedKit.title}</h4><p>${selectedKit.ingredients}</p>`;
-            }
+            // Pre-fill fields from user's profile
+            parentNameInput.value = user.displayName || '';
+            parentEmailInput.value = user.email || '';
+        } else {
+            // User is a guest
+            authMessage.innerHTML = `<p>You are booking as a guest. To track your orders online, please <a href="/login.html?redirect=/booking.html">log in or create an account</a>.</p>`;
         }
+    });
 
-        bookingForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const user = auth.currentUser;
-            if (!user) return alert('You must be signed in!');
+    // --- All your dynamic form logic (serviceTemplates, listeners, etc.) remains the same ---
+    const serviceSelect = document.getElementById('service-select');
+    const fieldsContainer = document.getElementById('service-fields-container');
 
-            const formData = new FormData(bookingForm);
-            const data = Object.fromEntries(formData.entries());
-            
+    const serviceTemplates = {
+        "Customized Care Kit": `
+        <div class="service-specific-fields">
+            <legend>Choose a Care Kit</legend>
+            <label for="delivery-date">Desired Delivery Date *</label>
+            <input type="date" id="delivery-date" name="deliveryDate" required>
+            <div class="kit-radio-group">
+                <label><input type="radio" name="kitType" value="Exam Stress Relief Kit"> Exam Stress Relief</label>
+                <label><input type="radio" name="kitType" value="Birthday or Holiday Box"> Birthday/Holiday</label>
+                <label><input type="radio" name="kitType" value="Sick Day Essentials"> Sick Day</label>
+            </div>
+            <div id="kit-ingredients"><p>Select a kit to see what's inside.</p></div>
+        </div>`,
+        "Urgent Care": `
+        <div class="service-specific-fields">
+            <legend>Urgent Care Details</legend>
+            <label for="assistance-datetime">Date & Time Needed *</label>
+            <input type="datetime-local" id="assistance-datetime" name="assistanceDateTime" required>
+            <label for="facility-name">Preferred Urgent Care Facility</label>
+            <input type="text" id="facility-name" name="facilityName" placeholder="e.g., Michigan Medicine Urgent Care">
+            <label for="reason">Reason for Visit (Injury/Sickness) *</label>
+            <textarea id="reason" name="reason" required></textarea>
+            <label for="emergency-contact">Emergency Contact (Name & Phone) *</label>
+            <input type="text" id="emergency-contact" name="emergencyContact" required placeholder="In case I need to reach someone else.">
+        </div>`,
+        "Move-In/Move-Out Help": `
+        <div class="service-specific-fields">
+            <legend>Move-In / Move-Out Details</legend>
+            <div>
+                <label><input type="radio" name="moveType" value="Move-In" checked> Move-In</label>
+                <label><input type="radio" name="moveType" value="Move-Out"> Move-Out</label>
+            </div>
+            <label for="Service-date">Move Date *</label>
+            <input type="date" id="Service-date" name="ServiceDate" required>
+            <label for="move-address">Student's Address *</label>
+            <input type="text" id="move-address" name="moveAddress" required>
+            <div id="storage-section">
+                <label><input type="checkbox" id="ship-items-checkbox"> Ship items to my house beforehand?</label>
+                <div id="storage-list-container" style="display:none;">
+                    <label>Items to Store:</label>
+                    <textarea name="storageItems" placeholder="List each item on a new line..."></textarea>
+                    <p class="disclaimer">Shipping is a flat rate of $200 per apartment (maximum 6 months holding time).
+                    Large items will incur an extra charge at the discretion of MGoMom, which will be brought up before purchase.</p>
+                </div>
+            </div>
+        </div>`,
+        "Airport Pickup": `
+        <div class="service-specific-fields">
+            <legend>Airport Pickup Details</legend>
+            <label for="pickup-datetime">Pickup Date & Time *</label>
+            <input type="datetime-local" id="pickup-datetime" name="pickupDateTime" required>
+            <label for="flight-number">Flight Number *</label>
+            <input type="text" id="flight-number" name="flightNumber" placeholder="e.g., DL1234" required>
+            <label for="dropoff-location">Drop-off Location *</label>
+            <input type="text" id="dropoff-location" name="dropoffLocation" required>
+            <label for="luggage-amount">Amount of Luggage</label>
+            <input type="text" id="luggage-amount" name="luggageAmount" placeholder="e.g., 2 large bags, 1 carry-on">
+        </div>`,
+        "Out-of-State Student Package": `
+        <div class="service-specific-fields">
+            <legend>Out-of-State Student Package</legend>
+            <p>This all-inclusive package ensures a smooth transition. We will contact you to coordinate all details, including airport pickup, dorm setup, cleaning, and an initial shopping trip.</p>
+            <label for="arrival-details">Please provide Student's Arrival Date, Flight Number, and Dorm/Apartment Address *</label>
+            <textarea id="arrival-details" name="arrivalDetails" required></textarea>
+        </div>`,
+        "Special Request": `
+        <div class="service-specific-fields">
+            <legend>Special Request Details</legend>
+            <p>Please describe your request in as much detail as possible. We will review it and provide a quote.</p>
+            <label for="request-details">Your Request *</label>
+            <textarea id="request-details" name="requestDetails" required></textarea>
+        </div>`
+    };
+
+    serviceSelect.addEventListener('change', () => {
+        const selected = serviceSelect.value;
+        fieldsContainer.innerHTML = serviceTemplates[selected] || '';
+
+        if (selected === 'Customized Care Kit') {
+            document.querySelectorAll('input[name="kitType"]').forEach(radio => {
+                radio.addEventListener('change', onKitTypeChange);
+            });
+        } else if (selected === 'Move-In/Move-Out Help') {
+            const checkbox = document.getElementById('ship-items-checkbox');
+            checkbox.addEventListener('change', () => {
+                document.getElementById('storage-list-container').style.display = checkbox.checked ? 'block' : 'none';
+            });
+        }
+    });
+
+    function onKitTypeChange(event) {
+        const kitData = {
+            "Exam Stress Relief Kit": { title: "Exam Stress Relief Kit", ingredients: "Includes: Healthy snacks, energy drinks, a stress ball, and encouraging handwritten notes." },
+            "Birthday or Holiday Box": { title: "Birthday or Holiday Box", ingredients: "Includes: Seasonal goodies, festive treats, fun decorations, and a celebratory card." },
+            "Sick Day Essentials": { title: "Sick Day Essentials", ingredients: "Includes: Hot soup, herbal tea, honey, tissues, cough drops, and other comfort items." }
+        };
+        const selectedKit = kitData[event.target.value];
+        if (selectedKit) {
+            document.getElementById('kit-ingredients').innerHTML = `<h4>${selectedKit.title}</h4><p>${selectedKit.ingredients}</p>`;
+        }
+    }
+
+    bookingForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const user = auth.currentUser;
+        const formData = new FormData(bookingForm);
+        const data = Object.fromEntries(formData.entries());
+
+        // Add user info depending on whether they are a guest or logged in
+        if (user) {
             data.userId = user.uid;
-            data.userEmail = user.email;
-            data.createdAt = serverTimestamp();
+            data.userEmail = user.email; // Use the verified email
+            data.userName = user.displayName || data.parentName; // Use profile name, fallback to form
+        } else {
+            data.userId = 'guest';
+            data.userEmail = data.parentEmail; // Get email from the new form field
+            data.userName = data.parentName;
+        }
+        
+        // Remove temporary form fields from the final data object
+        delete data.parentName;
+        delete data.parentEmail;
+        
+        data.createdAt = serverTimestamp();
 
-            try {
-                await addDoc(collection(db, "orders"), data);
-                alert("Success! Your request has been submitted.");
-                window.location.href = '/dashboard.html'; 
-            } catch (error) {
-                console.error("Error submitting request:", error);
-                alert("There was an error. Please try again.");
-            }
-        });
-    </script>
+        try {
+            await addDoc(collection(db, "orders"), data);
+            alert("Success! Your request has been submitted. We will contact you shortly with updates.");
+            window.location.href = user ? '/dashboard.html' : '/index.html'; // Go to dashboard if logged in, otherwise homepage
+        } catch (error) {
+            console.error("Error submitting request:", error);
+            alert("There was an error. Please try again.");
+        }
+    });
+</script>
 </body>
 </html>
