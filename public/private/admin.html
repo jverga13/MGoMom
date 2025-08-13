@@ -144,7 +144,11 @@
                 break;
             case 'Out-of-State Student Package':
                   details = `
-                    <strong>Arrival Details:</strong> ${order.arrivalDetails || 'N/A'}`;
+                    <strong>Pickup Time:</strong> ${order.pickupDateTime || 'N/A'}<br>
+                    <strong>Flight:</strong> ${order.flightNumber || 'N/A'}<br>
+                    <strong>Drop-off:</strong> ${order.dropoffLocation || 'N/A'}<br>
+                    <strong>Move Date:</strong> ${order.ServiceDate || 'N/A'}<br>
+                    <strong>Move Address:</strong> ${order.moveAddress || 'N/A'}`;
                 break;
             case 'Special Request':
                 details = `
