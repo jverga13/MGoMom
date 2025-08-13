@@ -224,6 +224,22 @@
     bookingForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const user = auth.currentUser;
+
+        // --- START: Add this new validation block here ---
+        const parentPhone = document.getElementById('parent-phone').value.replace(/\D/g, '');
+        const studentPhone = document.getElementById('student-phone').value.replace(/\D/g, '');
+
+        if (parentPhone.length !== 10) {
+            alert("Please enter a valid 10-digit phone number for 'Your Phone Number'.");
+            return; // Stop the form submission
+        }
+
+        if (studentPhone.length !== 10) {
+            alert("Please enter a valid 10-digit phone number for 'Student's Phone Number'.");
+            return; // Stop the form submission
+        }
+        // --- END: New validation block ---
+
         const formData = new FormData(bookingForm);
         const data = Object.fromEntries(formData.entries());
 
@@ -231,7 +247,7 @@
         if (user) {
             data.userId = user.uid;
             data.userEmail = user.email; // Use the verified email
-            data.userName = user.displayName || data.parentName; // Use profile name, fallback to form
+            data.userName = user ? (user.displayName || data.parentName) : data.parentName; // Use profile name if available, otherwise use the name from the form
         } else {
             data.userId = 'guest';
             data.userEmail = data.parentEmail; // Get email from the new form field
