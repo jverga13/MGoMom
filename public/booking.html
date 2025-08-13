@@ -151,12 +151,21 @@
                     <label for="luggage-amount">Amount of Luggage</label>
                     <input type="text" id="luggage-amount" name="luggageAmount" placeholder="e.g., 2 large bags, 1 carry-on">
                 </div>`,
-            "International Student Package": `
+            "Out-of-State Student Package": `
                 <div class="service-specific-fields">
                     <legend>International Student Package</legend>
-                    <p>This all-inclusive package ensures a smooth transition. We will contact you to coordinate all details, including airport pickup, dorm setup, cleaning, and an initial shopping trip.</p>
-                    <label for="arrival-details">Please provide Student's Arrival Date, Flight Number, and Dorm/Apartment Address *</label>
-                    <textarea id="arrival-details" name="arrivalDetails" required></textarea>
+                    <label for="pickup-datetime">Pickup Date & Time *</label>
+                    <input type="datetime-local" id="pickup-datetime" name="pickupDateTime" required>
+                    <label for="flight-number">Flight Number *</label>
+                    <input type="text" id="flight-number" name="flightNumber" placeholder="e.g., DL1234" required>
+                    <label for="dropoff-location">Drop-off Location *</label>
+                    <input type="text" id="dropoff-location" name="dropoffLocation" required>
+                    <label for="luggage-amount">Amount of Luggage</label>
+                    <input type="text" id="luggage-amount" name="luggageAmount" placeholder="e.g., 2 large bags, 1 carry-on">
+                    <label for="Service-date">Desired Move Date *</label>
+                    <input type="date" id="Service-date" name="ServiceDate" required>
+                    <label for="move-address">Student's Address *</label>
+                    <input type="text" id="move-address" name="moveAddress" required>
                 </div>`
         };
 
