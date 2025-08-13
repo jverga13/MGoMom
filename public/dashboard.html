@@ -13,6 +13,9 @@
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; background-color: #022b59; }
         th, td { padding: 12px 15px; border: 1px solid #001E3C; text-align: left; }
         th { background-color: #00172d; }
+        td { vertical-align: top; }
+        .service-details { font-size: 0.9rem; }
+        .service-details strong { color: #FFCB05; }
     </style>
 </head>
 <body>
@@ -23,8 +26,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Delivery Date</th>
-                        <th>Service</th>
+                        <th>Date/Time</th>
+                        <th>Service Details</th>
                         <th>Approval</th>
                         <th>Progress</th>
                     </tr>
@@ -40,7 +43,6 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, collection, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // This is the full, correct config object
         const firebaseConfig = {
             apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
             authDomain: "mgomom-33d39.firebaseapp.com",
@@ -74,9 +76,38 @@
                     querySnapshot.forEach((doc) => {
                         const order = doc.data();
                         const row = ordersTableBody.insertRow();
+                        
+                        // --- START: This is the new, smarter logic ---
+                        let dateInfo = 'N/A';
+                        let serviceDetails = `<strong>${order.service}</strong>`;
+
+                        switch (order.service) {
+                            case 'Customized Care Kit':
+                                dateInfo = order.deliveryDate;
+                                serviceDetails += `<br><div class="service-details">Kit: ${order.kitType}</div>`;
+                                break;
+                            case 'Urgent Care':
+                                dateInfo = new Date(order.assistanceDateTime).toLocaleString();
+                                serviceDetails += `<br><div class="service-details">Facility: ${order.facilityName}</div>`;
+                                break;
+                            case 'Airport Pickup':
+                                dateInfo = new Date(order.pickupDateTime).toLocaleString();
+                                serviceDetails += `<br><div class="service-details">Flight: ${order.flightNumber}</div>`;
+                                break;
+                             case 'Move-In/Move-Out Help':
+                                dateInfo = order.ServiceDate;
+                                serviceDetails += `<br><div class="service-details">For: ${order.moveAddress}</div>`;
+                                break;
+                            default:
+                                // Fallback for other services if they have a date field
+                                dateInfo = order.deliveryDate || order.ServiceDate || 'See notes';
+                                break;
+                        }
+                        // --- END: New logic ---
+
                         row.innerHTML = `
-                            <td>${order.deliveryDate || 'N/A'}</td>
-                            <td>${order.service}</td>
+                            <td>${dateInfo}</td>
+                            <td>${serviceDetails}</td>
                             <td>${order.approvalStatus || 'pending'}</td>
                             <td>${order.progressStatus || 'not-started'}</td>
                         `;
@@ -84,7 +115,7 @@
                 });
             } else {
                 document.getElementById('loading-message').textContent = 'Please sign in to view your orders. Redirecting...';
-                setTimeout(() => { window.location.href = '/index.html'; }, 2000);
+                setTimeout(() => { window.location.href = '/login.html?redirect=/dashboard.html'; }, 2000);
             }
         });
     </script>
