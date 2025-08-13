@@ -49,135 +49,182 @@
     <p id="error-message" style="display:none; color: red;">Access Denied. You will be redirected.</p>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // Import deleteDoc
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
-            authDomain: "mgomom-33d39.firebaseapp.com",
-            projectId: "mgomom-33d39",
-            storageBucket: "mgomom-33d39.firebasestorage.app",
-            messagingSenderId: "431667209818",
-            appId: "1:431667209818:web:44544d38e97720a4425a63",
-            measurementId: "G-BYE58ZXSNC"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
+        authDomain: "mgomom-33d39.firebaseapp.com",
+        projectId: "mgomom-33d39",
+        storageBucket: "mgomom-33d39.firebasestorage.app",
+        messagingSenderId: "431667209818",
+        appId: "1:431667209818:web:44544d38e97720a4425a63",
+        measurementId: "G-BYE58ZXSNC"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-        // --- All functions from before, with updates to renderOrder and addEventListeners ---
+    function showAccessDenied() {
+        document.getElementById('loading-message').style.display = 'none';
+        document.getElementById('error-message').style.display = 'block';
+        setTimeout(() => { window.location.href = '/index.html'; }, 3000);
+    }
 
-        function showAccessDenied() {
+    onAuthStateChanged(auth, (user) => {
+        const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12"; // Your Mom's Admin UID
+        if (user && user.uid === adminUid) {
+            document.getElementById('admin-content').style.display = 'block';
             document.getElementById('loading-message').style.display = 'none';
-            document.getElementById('error-message').style.display = 'block';
-            setTimeout(() => { window.location.href = '/index.html'; }, 3000);
+            listenForOrders();
+        } else {
+            showAccessDenied();
         }
+    });
 
-        onAuthStateChanged(auth, (user) => {
-            const adminUid = "4h6bsLOPXFZRVvCON340z0G3aV12"; // Your Mom's Admin UID
-            if (user && user.uid === adminUid) {
-                document.getElementById('admin-content').style.display = 'block';
-                document.getElementById('loading-message').style.display = 'none';
-                listenForOrders();
-            } else {
-                showAccessDenied();
-            }
+    function listenForOrders() {
+        const ordersRef = collection(db, "orders");
+        onSnapshot(query(ordersRef, orderBy("createdAt", "desc")), (snapshot) => {
+            const pendingBody = document.getElementById('pending-orders-body');
+            const activeBody = document.getElementById('active-orders-body');
+            const finishedBody = document.getElementById('finished-orders-body');
+            
+            pendingBody.innerHTML = activeBody.innerHTML = finishedBody.innerHTML = '';
+
+            snapshot.forEach((docSnap) => {
+                const order = docSnap.data();
+                const orderId = docSnap.id;
+                
+                order.approvalStatus = order.approvalStatus || 'pending';
+                order.progressStatus = order.progressStatus || 'not-started';
+
+                if (order.approvalStatus === 'pending') {
+                    renderOrder(pendingBody, order, orderId);
+                } else if (order.approvalStatus === 'accepted' && order.progressStatus !== 'completed') {
+                    renderOrder(activeBody, order, orderId);
+                } else { 
+                    renderOrder(finishedBody, order, orderId);
+                }
+            });
+            addEventListeners();
+        });
+    }
+
+    function getServiceSpecificDetails(order) {
+        let details = '';
+        switch (order.service) {
+            case 'Customized Care Kit':
+                details = `
+                    <strong>Kit Type:</strong> ${order.kitType || 'N/A'}<br>
+                    <strong>Deliver On:</strong> ${order.deliveryDate || 'N/A'}`;
+                break;
+            case 'Urgent Care':
+                details = `
+                    <strong>Needed On:</strong> ${order.assistanceDateTime || 'N/A'}<br>
+                    <strong>Facility:</strong> ${order.facilityName || 'N/A'}<br>
+                    <strong>Reason:</strong> ${order.reason || 'N/A'}<br>
+                    <strong>Emergency Contact:</strong> ${order.emergencyContact || 'N/A'}`;
+                break;
+            case 'Move-In/Move-Out Help':
+                details = `
+                    <strong>Move Type:</strong> ${order.moveType || 'N/A'}<br>
+                    <strong>Move Date:</strong> ${order.ServiceDate || 'N/A'}<br>
+                    <strong>Address:</strong> ${order.moveAddress || 'N/A'}<br>
+                    <strong>Ship Items?:</strong> ${order.storageItems ? 'Yes' : 'No'}<br>
+                    ${order.storageItems ? `<strong>Items:</strong> ${order.storageItems}<br>` : ''}`;
+                break;
+            case 'Airport Pickup':
+                details = `
+                    <strong>Pickup Time:</strong> ${order.pickupDateTime || 'N/A'}<br>
+                    <strong>Flight:</strong> ${order.flightNumber || 'N/A'}<br>
+                    <strong>Drop-off:</strong> ${order.dropoffLocation || 'N/A'}<br>
+                    <strong>Luggage:</strong> ${order.luggageAmount || 'N/A'}`;
+                break;
+            case 'Out-of-State Student Package':
+                  details = `
+                    <strong>Arrival Details:</strong> ${order.arrivalDetails || 'N/A'}`;
+                break;
+            case 'Special Request':
+                details = `
+                    <strong>Request:</strong> ${order.requestDetails || 'N/A'}`;
+                break;
+            default:
+                details = 'No specific details provided.';
+        }
+        return details;
+    }
+
+    function renderOrder(tbody, order, orderId) {
+        const row = tbody.insertRow();
+        const customerInfoCell = `
+            <div class="customer-info">
+                <strong>Parent:</strong> ${order.userName || 'N/A'}<br>
+                <strong>Parent Phone:</strong> ${order.parentPhone || 'N/A'}<br>
+                <strong>Student:</strong> ${order.studentName || 'N/A'}<br>
+                <strong>Student Phone:</strong> ${order.studentPhone || 'N/A'}<br>
+                <strong>Email:</strong> ${order.userEmail || 'N/A'}
+            </div>
+        `;
+        const serviceDetailsCell = `
+            <div class="service-details">
+                <strong>Service:</strong> ${order.service}<br>
+                ${getServiceSpecificDetails(order)}
+            </div>
+        `;
+        const notesCell = `<td class="notes-cell">${order.notes || '<i>No notes provided.</i>'}</td>`;
+        const deleteButtonCell = `<td><button class="delete-button" data-order-id="${orderId}">Delete</button></td>`;
+
+        if (tbody.id === 'pending-orders-body') {
+            row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td>${createApprovalDropdown(order, orderId)}</td>${deleteButtonCell}`;
+        } else if (tbody.id === 'active-orders-body') {
+            row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td>${createProgressDropdown(order, orderId)}</td>${deleteButtonCell}`;
+        } else {
+            const finalStatus = order.approvalStatus === 'rejected' ? 'Rejected' : 'Completed';
+            row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td><strong>${finalStatus}</strong></td>${deleteButtonCell}`;
+        }
+    }
+
+    function createApprovalDropdown(order, orderId) {
+        return `<select data-order-id="${orderId}" data-field="approvalStatus" class="status-dropdown">
+                    <option value="pending" ${order.approvalStatus === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="accepted" ${order.approvalStatus === 'accepted' ? 'selected' : ''}>Accept</option>
+                    <option value="rejected" ${order.approvalStatus === 'rejected' ? 'selected' : ''}>Reject</option>
+                </select>`;
+    }
+    
+    function createProgressDropdown(order, orderId) {
+        return `<select data-order-id="${orderId}" data-field="progressStatus" class="status-dropdown">
+                    <option value="not-started" ${order.progressStatus === 'not-started' ? 'selected' : ''}>Not Started</option>
+                    <option value="in-progress" ${order.progressStatus === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                    <option value="completed" ${order.progressStatus === 'completed' ? 'selected' : ''}>Completed</option>
+                </select>`;
+    }
+
+    function addEventListeners() {
+        document.querySelectorAll('.status-dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', async (event) => {
+                const newValue = event.target.value;
+                const orderId = event.target.dataset.orderId;
+                const field = event.target.dataset.field;
+                
+                const updateData = {};
+                updateData[field] = newValue;
+
+                await updateDoc(doc(db, "orders", orderId), updateData);
+            });
         });
 
-        function listenForOrders() {
-            const ordersRef = collection(db, "orders");
-            onSnapshot(query(ordersRef, orderBy("createdAt", "desc")), (snapshot) => {
-                const pendingBody = document.getElementById('pending-orders-body');
-                const activeBody = document.getElementById('active-orders-body');
-                const finishedBody = document.getElementById('finished-orders-body');
-                
-                pendingBody.innerHTML = activeBody.innerHTML = finishedBody.innerHTML = '';
-
-                snapshot.forEach((docSnap) => {
-                    const order = docSnap.data();
-                    const orderId = docSnap.id;
-                    
-                    order.approvalStatus = order.approvalStatus || 'pending';
-                    order.progressStatus = order.progressStatus || 'not-started';
-
-                    if (order.approvalStatus === 'pending') {
-                        renderOrder(pendingBody, order, orderId);
-                    } else if (order.approvalStatus === 'accepted' && order.progressStatus !== 'completed') {
-                        renderOrder(activeBody, order, orderId);
-                    } else { 
-                        renderOrder(finishedBody, order, orderId);
-                    }
-                });
-                addEventListeners(); // Renamed for clarity
+        document.querySelectorAll('.delete-button').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const orderId = event.target.dataset.orderId;
+                if (confirm('Are you sure you want to permanently delete this order?')) {
+                    await deleteDoc(doc(db, "orders", orderId));
+                }
             });
-        }
-        
-        // (Your getServiceSpecificDetails function remains the same)
-        function getServiceSpecificDetails(order) {
-            let details = '';
-            // ... (all the switch cases remain the same)
-            return details;
-        }
-
-
-        function renderOrder(tbody, order, orderId) {
-            const row = tbody.insertRow();
-            const customerInfoCell = `...`; // Your existing customer info cell
-            const serviceDetailsCell = `...`; // Your existing service details cell
-            const notesCell = `<td class="notes-cell">${order.notes || '<i>No notes provided.</i>'}</td>`;
-            
-            const deleteButtonCell = `<td><button class="delete-button" data-order-id="${orderId}">Delete</button></td>`;
-
-            if (tbody.id === 'pending-orders-body') {
-                row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td>${createApprovalDropdown(order, orderId)}</td>${deleteButtonCell}`;
-            } else if (tbody.id === 'active-orders-body') {
-                row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td>${createProgressDropdown(order, orderId)}</td>${deleteButtonCell}`;
-            } else {
-                const finalStatus = order.approvalStatus === 'rejected' ? 'Rejected' : 'Completed';
-                row.innerHTML = `<td>${customerInfoCell}</td><td>${serviceDetailsCell}</td>${notesCell}<td><strong>${finalStatus}</strong></td>${deleteButtonCell}`;
-            }
-        }
-        
-        // (Your createApprovalDropdown and createProgressDropdown functions remain the same)
-
-        function addEventListeners() { // Renamed from addEventListenersToDropdowns
-            // --- Dropdown Logic (remains the same) ---
-            document.querySelectorAll('.status-dropdown').forEach(dropdown => {
-                dropdown.addEventListener('change', async (event) => {
-                    const newValue = event.target.value;
-                    const orderId = event.target.dataset.orderId;
-                    const field = event.target.dataset.field;
-                    
-                    const updateData = {};
-                    updateData[field] = newValue;
-
-                    await updateDoc(doc(db, "orders", orderId), updateData);
-                    
-                    if (field === 'approvalStatus' && (newValue === 'accepted' || newValue === 'rejected')) {
-                        // triggerNotification(orderId, newValue); // Your notification logic
-                    }
-                });
-            });
-
-            // --- START: New Delete Button Logic ---
-            document.querySelectorAll('.delete-button').forEach(button => {
-                button.addEventListener('click', async (event) => {
-                    const orderId = event.target.dataset.orderId;
-                    if (confirm(`Are you sure you want to permanently delete this order? This cannot be undone.`)) {
-                        try {
-                            await deleteDoc(doc(db, "orders", orderId));
-                            console.log("Order deleted successfully:", orderId);
-                        } catch (error) {
-                            console.error("Error deleting order:", error);
-                            alert("There was an error deleting the order. Please try again.");
-                        }
-                    }
-                });
-            });
-            // --- END: New Delete Button Logic ---
-        }
-    </script>
+        });
+    }
+</script>
 </body>
 </html>
