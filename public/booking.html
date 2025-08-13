@@ -225,45 +225,48 @@
         e.preventDefault();
         const user = auth.currentUser;
 
-        // --- START: Add this new validation block here ---
+        // --- Phone Number Validation (remains the same) ---
         const parentPhone = document.getElementById('parent-phone').value.replace(/\D/g, '');
         const studentPhone = document.getElementById('student-phone').value.replace(/\D/g, '');
 
         if (parentPhone.length !== 10) {
             alert("Please enter a valid 10-digit phone number for 'Your Phone Number'.");
-            return; // Stop the form submission
+            return;
         }
-
         if (studentPhone.length !== 10) {
             alert("Please enter a valid 10-digit phone number for 'Student's Phone Number'.");
-            return; // Stop the form submission
+            return;
         }
-        // --- END: New validation block ---
-
+        
         const formData = new FormData(bookingForm);
         const data = Object.fromEntries(formData.entries());
 
-        // Add user info depending on whether they are a guest or logged in
+        // --- START: This is the corrected data handling logic ---
+        const orderData = { ...data }; // Copy all form data into the final order object
+
         if (user) {
-            data.userId = user.uid;
-            data.userEmail = user.email; // Use the verified email
-            data.userName = user ? (user.displayName || data.parentName) : data.parentName; // Use profile name if available, otherwise use the name from the form
+            // If the user is logged in, use their verified info
+            orderData.userId = user.uid;
+            orderData.userEmail = user.email;
+            orderData.userName = user.displayName || data.parentName; // Use profile name or fall back to form
         } else {
-            data.userId = 'guest';
-            data.userEmail = data.parentEmail; // Get email from the new form field
-            data.userName = data.parentName;
+            // If it's a guest, use the info they entered
+            orderData.userId = 'guest';
+            orderData.userEmail = data.parentEmail;
+            orderData.userName = data.parentName;
         }
         
-        // Remove temporary form fields from the final data object
-        delete data.parentName;
-        delete data.parentEmail;
+        // Clean up the temporary fields AFTER we've used them
+        delete orderData.parentName;
+        delete orderData.parentEmail;
         
-        data.createdAt = serverTimestamp();
+        orderData.createdAt = serverTimestamp();
+        // --- END: Corrected data handling logic ---
 
         try {
-            await addDoc(collection(db, "orders"), data);
+            await addDoc(collection(db, "orders"), orderData); // Save the corrected orderData
             alert("Success! Your request has been submitted. We will contact you shortly with updates.");
-            window.location.href = user ? '/dashboard.html' : '/index.html'; // Go to dashboard if logged in, otherwise homepage
+            window.location.href = user ? '/dashboard.html' : '/index.html';
         } catch (error) {
             console.error("Error submitting request:", error);
             alert("There was an error. Please try again.");
