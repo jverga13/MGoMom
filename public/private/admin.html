@@ -15,8 +15,8 @@
         tr:nth-of-type(even) { background-color: #f9f9f9; }
         select { padding: 8px; border-radius: 4px; }
         .dashboard-section { margin-top: 2rem; }
-        .customer-info { font-size: 0.9rem; white-space: pre-wrap; }
-        .customer-info strong { color: #001E3C; }
+        .customer-info, .service-details { font-size: 0.9rem; white-space: pre-wrap; }
+        .customer-info strong, .service-details strong { color: #001E3C; display: inline-block; min-width: 110px; }
         .notes-cell { min-width: 200px; font-style: italic; color: #555;}
     </style>
 </head>
@@ -51,7 +51,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB56B8O99N8bzQQAMgPdYKwGU6wIsPgeQk",
@@ -97,6 +97,10 @@
                     const order = docSnap.data();
                     const orderId = docSnap.id;
                     
+                    // Set default statuses if they don't exist to prevent errors
+                    order.approvalStatus = order.approvalStatus || 'pending';
+                    order.progressStatus = order.progressStatus || 'not-started';
+
                     if (order.approvalStatus === 'pending') {
                         renderOrder(pendingBody, order, orderId);
                     } else if (order.approvalStatus === 'accepted' && order.progressStatus !== 'completed') {
@@ -108,22 +112,71 @@
                 addEventListenersToDropdowns();
             });
         }
-        
+
+        function getServiceSpecificDetails(order) {
+            let details = '';
+            switch (order.service) {
+                case 'Customized Care Kit':
+                    details = `
+                        <strong>Kit Type:</strong> ${order.kitType || 'N/A'}<br>
+                        <strong>Deliver On:</strong> ${order.deliveryDate || 'N/A'}`;
+                    break;
+                case 'Urgent Care Assistance':
+                    details = `
+                        <strong>Needed On:</strong> ${order.assistanceDateTime || 'N/A'}<br>
+                        <strong>Facility:</strong> ${order.facilityName || 'N/A'}<br>
+                        <strong>Reason:</strong> ${order.reason || 'N/A'}<br>
+                        <strong>Emergency Contact:</strong> ${order.emergencyContact || 'N/A'}`;
+                    break;
+                case 'Move-In/Move-Out Help':
+                    details = `
+                        <strong>Move Type:</strong> ${order.moveType || 'N/A'}<br>
+                        <strong>Move Date:</strong> ${order.ServiceDate || 'N/A'}<br>
+                        <strong>Address:</strong> ${order.moveAddress || 'N/A'}<br>
+                        <strong>Ship Items?:</strong> ${order.storageItems ? 'Yes' : 'No'}<br>
+                        ${order.storageItems ? `<strong>Items:</strong> ${order.storageItems}<br>` : ''}`;
+                    break;
+                case 'Airport Pickup':
+                    details = `
+                        <strong>Pickup Time:</strong> ${order.pickupDateTime || 'N/A'}<br>
+                        <strong>Flight:</strong> ${order.flightNumber || 'N/A'}<br>
+                        <strong>Drop-off:</strong> ${order.dropoffLocation || 'N/A'}<br>
+                        <strong>Luggage:</strong> ${order.luggageAmount || 'N/A'}`;
+                    break;
+                case 'Out-of-State Student Package':
+                     details = `
+                        <strong>Pickup Time:</strong> ${order.pickupDateTime || 'N/A'}<br>
+                        <strong>Flight:</strong> ${order.flightNumber || 'N/A'}<br>
+                        <strong>Drop-off:</strong> ${order.dropoffLocation || 'N/A'}<br>
+                        <strong>Luggage:</strong> ${order.luggageAmount || 'N/A'}<br>
+                        <strong>Move Date:</strong> ${order.ServiceDate || 'N/A'}<br>
+                        <strong>Address:</strong> ${order.moveAddress || 'N/A'}`;
+                    break;
+                case 'Special Request':
+                    details = `
+                        <strong>Request:</strong> ${order.requestDetails || 'N/A'}`;
+                    break;
+                default:
+                    details = 'No specific details provided.';
+            }
+            return details;
+        }
+
         function renderOrder(tbody, order, orderId) {
             const row = tbody.insertRow();
             const customerInfoCell = `
                 <div class="customer-info">
-                    <strong>Name:</strong> ${order.userName || 'N/A'}<br>
-                    <strong>Email:</strong> ${order.userEmail || 'N/A'}<br>
-                    <strong>Phone:</strong> ${order.userPhone || 'N/A'}<br>
-                    <strong>Contact Pref:</strong> ${order.contactPreference || 'N/A'}
+                    <strong>Parent:</strong> ${order.parentName || 'N/A'}<br>
+                    <strong>Parent Phone:</strong> ${order.parentPhone || 'N/A'}<br>
+                    <strong>Student:</strong> ${order.studentName || 'N/A'}<br>
+                    <strong>Student Phone:</strong> ${order.studentPhone || 'N/A'}<br>
+                    <strong>Email:</strong> ${order.userEmail || 'N/A'}
                 </div>
             `;
             const serviceDetailsCell = `
-                <div>
+                <div class="service-details">
                     <strong>Service:</strong> ${order.service}<br>
-                    <strong>For:</strong> ${order.studentName}<br>
-                    <strong>Deliver On:</strong> ${order.deliveryDate}
+                    ${getServiceSpecificDetails(order)}
                 </div>
             `;
             const notesCell = `<td class="notes-cell">${order.notes || '<i>No notes provided.</i>'}</td>`;
@@ -154,6 +207,50 @@
                     </select>`;
         }
 
+        async function triggerNotification(orderId, newStatus) {
+            // IMPORTANT: Replace this URL with your actual Zapier Webhook URL
+            const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/xxxxxxx/xxxxxxx/';
+
+            if (zapierWebhookUrl.includes('xxxxxxx')) {
+                console.warn('Zapier Webhook URL is a placeholder. Please replace it.');
+                return;
+            }
+
+            try {
+                const orderRef = doc(db, "orders", orderId);
+                const docSnap = await getDoc(orderRef);
+
+                if (!docSnap.exists()) {
+                    console.error("Order not found!");
+                    return;
+                }
+                const orderData = docSnap.data();
+
+                // Send data to Zapier
+                const response = await fetch(zapierWebhookUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        status: newStatus,
+                        service: orderData.service,
+                        parentName: orderData.parentName,
+                        studentName: orderData.studentName,
+                        contactEmail: orderData.userEmail,
+                        contactPhone: orderData.parentPhone // Assuming parent's phone is the primary contact
+                    })
+                });
+
+                if (response.ok) {
+                    console.log('Successfully triggered notification for order:', orderId);
+                } else {
+                    console.error('Failed to trigger Zapier webhook:', await response.text());
+                }
+
+            } catch (error) {
+                console.error('Error triggering notification:', error);
+            }
+        }
+
+
         function addEventListenersToDropdowns() {
             document.querySelectorAll('.status-dropdown').forEach(dropdown => {
                 dropdown.addEventListener('change', async (event) => {
@@ -165,6 +262,11 @@
                     updateData[field] = newValue;
 
                     await updateDoc(doc(db, "orders", orderId), updateData);
+                    
+                    // If the changed field is the approval status, trigger a notification
+                    if (field === 'approvalStatus' && (newValue === 'accepted' || newValue === 'rejected')) {
+                        triggerNotification(orderId, newValue);
+                    }
                 });
             });
         }
